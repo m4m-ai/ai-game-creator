@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-import { GalRoleData } from "GalRoleData";
 import { UiNames } from "./UIData/UiNames";
 import { UIOpenOrHideManager, commonBackData } from "./UIOpenOrHideManager";
 import { UiManager } from "PSDUI/UiManager";

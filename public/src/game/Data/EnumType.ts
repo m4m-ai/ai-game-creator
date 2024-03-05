@@ -27,6 +27,13 @@ export enum ChatTabEnum {
     backgroundImage,
     /** 自由聊天 */
     free,
+    /**故事导入 */
+    storyImport,
+    /**角色立绘和声线 */
+    rolePortrait,
+    /**自动导入 */
+    autoImport
+
 }
 
 export enum ChatApiType {
@@ -54,4 +61,6 @@ export enum ChatApiType {
     sceneDaiglogVoices,
     /** 自由聊天 */
     free,
+    /**故事导入 */
+    storyImport
 }

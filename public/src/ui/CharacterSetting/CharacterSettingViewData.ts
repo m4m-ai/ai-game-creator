@@ -17,7 +17,7 @@ limitations under the License.
 import { ViewBaseData } from "Data/ViewBaseData";
 import { BackgroundPictureManager, PictureData } from "Manager/BackgroundPictureManager";
 import { CharacterFactionType } from "Manager/CharacterSettingManager";
-import { EditorGuideType, PlayerGuideManager, guideUIName } from "Manager/PlayerGuideManager";
+import { EditorGuideType, PlayerGuideManager, StoryIndexType, guideUIName } from "Manager/PlayerGuideManager";
 import { RoleSettingManager } from "Manager/RoleSettingManager";
 import { UIOpenOrHideManager } from "Manager/UIOpenOrHideManager";
 import { CharacterSettingView } from "./CharacterSettingView";
@@ -33,6 +33,8 @@ import { cMap } from "Data/Map";
 import { UiManager } from "PSDUI/UiManager";
 import { ProjectRoleManagerRequest } from "AutoCode/Net/ClientRequest/ProjectRoleManagerRequest";
 import { GameProjectManager } from "Manager/GameProjectManager";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
 // import { ManipulatebubblesView } from "ManipulatebubblesView";
 
 export class FileInfoData {
@@ -84,8 +86,7 @@ export class CharacterSettingViewData implements ViewBaseData {
 
     public setPictureFun() {
         let data = BackgroundPictureManager.Instance.getbackgrounPictureList();
-        if(data==null)
-        {
+        if (data == null) {
             console.error("setPictureFun backgrounPictureList为空");
             return;
         }
@@ -111,6 +112,14 @@ export class CharacterSettingViewData implements ViewBaseData {
             case CharacterFactionType.role:
                 RoleSettingManager.instance.currentRoleID = "";
                 UIOpenOrHideManager.Instance.HideSpreadingPlateView();
+                if (AppMain.buildType == BuildType.StoryType) {
+                    AIResourceManager.closeUIname = UiNames.CharacterSetting;
+                    AIResourceManager.openUIname = UiNames.RoleSettings;
+                    AIResourceManager.instance.editorRebackOrSave();
+                    AIResourceManager.closeUIname = UiNames.RoleSettings;
+                    AIResourceManager.openUIname = UiNames.CharacterSetting;
+                    return;
+                }
                 if (PlayerGuideManager.isNewGuideBol) {
                     UIOpenOrHideManager.Instance.HideNavigationBarView();
                     PlayerGuideManager.instance.guideStepIndex = 1;
@@ -127,6 +136,15 @@ export class CharacterSettingViewData implements ViewBaseData {
             case CharacterFactionType.backgroundPicture:
                 BackgroundPictureManager.Instance.backGroundId = null;
                 BackgroundPictureManager.Instance.backgrounPicture = new PictureData();
+                UIOpenOrHideManager.Instance.HideSpreadingPlateView();
+                if (AppMain.buildType == BuildType.StoryType) {
+                    AIResourceManager.closeUIname = UiNames.CharacterSetting;
+                    AIResourceManager.openUIname = UiNames.BackgroundPicture;
+                    AIResourceManager.instance.editorRebackOrSave();
+                    AIResourceManager.closeUIname = UiNames.BackgroundPicture;
+                    AIResourceManager.openUIname = CharacterFactionType.backgroundPicture.toString();
+                    return;
+                }
                 if (PlayerGuideManager.isNewGuideBol) {
                     UIOpenOrHideManager.Instance.HideNavigationBarView();
                     PlayerGuideManager.instance.guideStepIndex = 1;
@@ -151,6 +169,16 @@ export class CharacterSettingViewData implements ViewBaseData {
         let type = CharacterSettingView.Instance.type;;
         switch (type) {
             case CharacterFactionType.role:
+                if (AppMain.buildType == BuildType.StoryType) {
+                    AIResourceManager.closeUIname = UiNames.CharacterSetting;
+                    AIResourceManager.openUIname = UiNames.RoleSettings;
+
+                    RoleSettingManager.instance.currentRoleID = roleData.id;
+                    UIOpenOrHideManager.Instance.HideCharacterSettingView();
+                    UIOpenOrHideManager.Instance.HideTutorialBackgroundView();
+                    PlayerGuideManager.instance.StoryGuideIndex(StoryIndexType.roleType);
+                    return;
+                }
                 if (!PlayerGuideManager.isNewGuideBol) {
                     AIResourceManager.openUIname = UiNames.CharacterSetting;
                     AIResourceManager.closeUIname = UiNames.RoleSettings;

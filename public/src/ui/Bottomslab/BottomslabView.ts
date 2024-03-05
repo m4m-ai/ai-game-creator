@@ -31,6 +31,7 @@ export class BottomslabView extends Bottomslab.Bottomslab {
     public midBtnCallBackFun: Function;
     public rightBtnCallBackFun: Function;
     public uploadBtnCallBackFun: Function;
+    public rightBtnCallBackFun2: Function;
     public viewData: BottomslabViewData;
     public onInit() {
         super.onInit();
@@ -45,7 +46,6 @@ export class BottomslabView extends Bottomslab.Bottomslab {
         this.selecg1_btn_btnEvent = this.officialBtnFun.bind(this);
         // this.notoptionalbg_btn_btnEvent = this.AIBtnFun.bind(this);
         this.selecbg2_btn_btnEvent = this.AIBtnFun.bind(this);
-
         this.animation_btn_btnEvent = this.uloadBtnFun.bind(this);
 
         let bgBtn = this.bg.transform.addComponent("button") as m4m.framework.button;
@@ -79,6 +79,12 @@ export class BottomslabView extends Bottomslab.Bottomslab {
             this.rightBtnCallBackFun(inputStr);
         }
     }
+
+    private onetouchFun() {
+        if (this.rightBtnCallBackFun2) {
+            this.rightBtnCallBackFun2();
+        }
+    }
     private uloadBtnFun() {
         if (this.uploadBtnCallBackFun) {
             this.uploadBtnCallBackFun();
@@ -107,6 +113,7 @@ export class BottomslabView extends Bottomslab.Bottomslab {
         //右侧按钮文字设置
         this.selec2_lab_text(lab3);
     }
+
     //设置描述文本 以及是否需要换行处理
     public setDescribeText(showbol: boolean = false, describeStr: string = "", bol: boolean = false) {
         // this.generalbg_img.textboxbg.textboxbg1.description_lab.transform.visible = showbol;
@@ -170,6 +177,9 @@ export class BottomslabView extends Bottomslab.Bottomslab {
         }
         if (data.rightBtnCallBack) {
             this.rightBtnCallBackFun = data.rightBtnCallBack;
+        }
+        if (data.rightBtnCallBack2) {
+            this.rightBtnCallBackFun2 = data.rightBtnCallBack2;
         }
         if (data.uploadBtnCallBack) {
             this.uploadBtnCallBackFun = data.uploadBtnCallBack;

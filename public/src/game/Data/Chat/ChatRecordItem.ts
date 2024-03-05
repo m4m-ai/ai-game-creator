@@ -18,17 +18,19 @@ import { cMap } from "Data/Map";
 import { AIChatDataType, AIChatSoundData, AIChatTextData, AiGuideMessageSelectButton, CustomButton } from "../DataType";
 import { ChatMessageDataManager } from "../../Manager/ChatMessageDataManager";
 import { ChatTabEnum } from "../EnumType";
+import { AppMain } from "../../appMain";
+import { BuildType } from "../../GameEnum";
 
 //聊天内容数据
 export class ChatRecordItem {
-    
+
     public constructor(index: number, chatType: ChatTabEnum, originData: Entity.ChatMessageData) {
         this.index = index;
         this.chatType = chatType;
         this.chatTitle = originData.title;
         this.originData = originData;
     }
-    
+
     public index: number;
 
     /** 是否来自服务器消息 */
@@ -50,13 +52,13 @@ export class ChatRecordItem {
     /** 聊天类型 */
     public type: AIChatDataType;
     /** AI 文本聊天 */
-    public aiChatTextDic:cMap<AIChatTextData>;
-    
+    public aiChatTextDic: cMap<AIChatTextData>;
+
     /** 选项按钮 */
     public selectBtn: AiGuideMessageSelectButton[];
     /** 是否开启多选 */
     public multipleChoice: boolean;
-    
+
     /** 重新生成按钮 */
     public regenBtn: CustomButton;
     /** 自定义按钮 */
@@ -81,12 +83,17 @@ export class ChatRecordItem {
      */
     public canShowButton() {
         //return this.originData.isOver && this.useButton && this.originData.jsondata != null && this.originData.jsondata.length > 0;
-        return this.originData.isOver && this.customButton && 
-        (
-            this.compelDisplayButton ||
-            (this.isFromServer && this.originData.jsondata != null && this.originData.jsondata.length > 0) ||
-            !this.isFromServer
-        );
+        if (AppMain.buildType == BuildType.StoryType) {
+            return this.originData.isOver;
+        } else {
+            return this.originData.isOver && this.customButton &&
+                (
+                    this.compelDisplayButton ||
+                    (this.isFromServer && this.originData.jsondata != null && this.originData.jsondata.length > 0) ||
+                    !this.isFromServer
+
+                );
+        }
     }
 
     /** 获取上一条对话 */

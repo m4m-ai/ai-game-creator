@@ -45,3 +45,10 @@ export enum SkillFactionType {
     */
     specialeffect = 7,
 }
+
+
+export enum BuildType {
+    AIType,
+    StoryType,
+    none
+}

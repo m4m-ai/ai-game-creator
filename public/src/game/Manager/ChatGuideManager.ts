@@ -14,13 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
  */
+import { AutomatedImportGuideList } from "../Data/Chat/AutomatedImportGuide";
 import { backgroundImageGuideList } from "../Data/Chat/BackgroundImageGuide";
 import { backgroundSettingGuideList } from "../Data/Chat/BackgroundSettingGuide";
 import { chapterScenesGuideList } from "../Data/Chat/ChapterScenesGuide";
 import { ChatGuide } from "../Data/Chat/ChatGuide";
+import { RolePortraitGuideList } from "../Data/Chat/RolePortraitGuide";
 import { roleSettingGuideList } from "../Data/Chat/RoleSettingGuide";
 import { sceneDialogueGuideList } from "../Data/Chat/SceneDialogueGuide";
+import { StoryImportGuideGuideList } from "../Data/Chat/StoryImportGuide";
 import { ChatTabEnum } from "../Data/EnumType";
+
 
 export class ChatGuideManager {
 
@@ -36,6 +40,8 @@ export class ChatGuideManager {
         this.aiGrideMessageMap.set(ChatTabEnum.chapterScenes, chapterScenesGuideList);
         this.aiGrideMessageMap.set(ChatTabEnum.role, roleSettingGuideList);
         this.aiGrideMessageMap.set(ChatTabEnum.sceneDialogue, sceneDialogueGuideList);
+        this.aiGrideMessageMap.set(ChatTabEnum.storyImport, StoryImportGuideGuideList);
+        this.aiGrideMessageMap.set(ChatTabEnum.rolePortrait, RolePortraitGuideList);
+        this.aiGrideMessageMap.set(ChatTabEnum.autoImport, AutomatedImportGuideList);
     }
-
 }

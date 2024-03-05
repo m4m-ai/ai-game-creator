@@ -32,8 +32,8 @@ export class ProjectBasicSettingsManagerRequest {
      * 获取指定项目的背景设定
      */
     public GetBackStory(projectId) {
-        let paramJsons =`"a0":${JSON.stringify(projectId)},`;
-        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager","GetBackStory",`${paramJsons}`);
+        let paramJsons = `"a0":${JSON.stringify(projectId)},`;
+        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager", "GetBackStory", `${paramJsons}`);
         NetWebscoket.Instance.sendStr(mess);
     }
 
@@ -41,8 +41,8 @@ export class ProjectBasicSettingsManagerRequest {
      * 设定指定项目进度
      */
     public SetSchedule(projectId, schedule) {
-        let paramJsons =`"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(schedule)},`;
-        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager","SetSchedule",`${paramJsons}`);
+        let paramJsons = `"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(schedule)},`;
+        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager", "SetSchedule", `${paramJsons}`);
         NetWebscoket.Instance.sendStr(mess);
     }
 
@@ -50,8 +50,8 @@ export class ProjectBasicSettingsManagerRequest {
      * 设定指定项目的背景设定
      */
     public SetBackStory(projectId, projectBack) {
-        let paramJsons =`"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(projectBack)},`;
-        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager","SetBackStory",`${paramJsons}`);
+        let paramJsons = `"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(projectBack)},`;
+        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager", "SetBackStory", `${paramJsons}`);
         NetWebscoket.Instance.sendStr(mess);
     }
 
@@ -59,8 +59,8 @@ export class ProjectBasicSettingsManagerRequest {
      * 通过语言模型生成指定项目的背景设定，llmType：调用的语言模型
      */
     public LLM_GetBackStory(projectId, title, llmType, prompt) {
-        let paramJsons =`"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(title)},"a2":${JSON.stringify(llmType)},"a3":${JSON.stringify(prompt)},`;
-        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager","LLM_GetBackStory",`${paramJsons}`);
+        let paramJsons = `"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(title)},"a2":${JSON.stringify(llmType)},"a3":${JSON.stringify(prompt)},`;
+        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager", "LLM_GetBackStory", `${paramJsons}`);
         NetWebscoket.Instance.sendStr(mess);
     }
 
@@ -68,8 +68,17 @@ export class ProjectBasicSettingsManagerRequest {
      * 设定指定项目的项目名
      */
     public SetProjectName(projectId, projectName) {
-        let paramJsons =`"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(projectName)},`;
-        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager","SetProjectName",`${paramJsons}`);
+        let paramJsons = `"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(projectName)},`;
+        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager", "SetProjectName", `${paramJsons}`);
+        NetWebscoket.Instance.sendStr(mess);
+    }
+
+    /**
+     * 删除项目
+     */
+    public deleteGalPreviewData(projectId: string,name: string) {
+        let paramJsons = `"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(name)},`;
+        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager", "deleteGalPreviewData", `${paramJsons}`);
         NetWebscoket.Instance.sendStr(mess);
     }
 
@@ -77,8 +86,8 @@ export class ProjectBasicSettingsManagerRequest {
      * 通过语言模型生成指定项目的项目名，llmType：调用的语言模型
      */
     public LLM_GetProjectName(projectId, title, llmType, backStory, prompt) {
-        let paramJsons =`"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(title)},"a2":${JSON.stringify(llmType)},"a3":${JSON.stringify(backStory)},"a4":${JSON.stringify(prompt)},`;
-        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager","LLM_GetProjectName",`${paramJsons}`);
+        let paramJsons = `"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(title)},"a2":${JSON.stringify(llmType)},"a3":${JSON.stringify(backStory)},"a4":${JSON.stringify(prompt)},`;
+        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager", "LLM_GetProjectName", `${paramJsons}`);
         NetWebscoket.Instance.sendStr(mess);
     }
 
@@ -86,8 +95,8 @@ export class ProjectBasicSettingsManagerRequest {
      * 获取支持的画风，count：获取数量, isRandom:(是否随机画风，还是由AI判断适合的画风)
      */
     public StableDiffusio_GetStyleExample(projectId, title, count, isRandom) {
-        let paramJsons =`"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(title)},"a2":${JSON.stringify(count)},"a3":${JSON.stringify(isRandom)},`;
-        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager","StableDiffusio_GetStyleExample",`${paramJsons}`);
+        let paramJsons = `"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(title)},"a2":${JSON.stringify(count)},"a3":${JSON.stringify(isRandom)},`;
+        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager", "StableDiffusio_GetStyleExample", `${paramJsons}`);
         NetWebscoket.Instance.sendStr(mess);
     }
 
@@ -95,8 +104,8 @@ export class ProjectBasicSettingsManagerRequest {
      * 设定指定项目的画风模型
      */
     public SetStyle(projectId, styleId) {
-        let paramJsons =`"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(styleId)},`;
-        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager","SetStyle",`${paramJsons}`);
+        let paramJsons = `"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(styleId)},`;
+        let mess = WebsocketTool.Instance.getMsg("ProjectBasicSettingsManager", "SetStyle", `${paramJsons}`);
         NetWebscoket.Instance.sendStr(mess);
     }
 

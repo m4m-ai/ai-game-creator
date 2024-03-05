@@ -20,7 +20,7 @@ import { BindKeyName } from "../Data/BindKeyName";
 import { UiManager } from "PSDUI/UiManager";
 import { UiNames } from "./UIData/UiNames";
 import { NavigationBarBackData, UIOpenOrHideManager, commonBackData } from "./UIOpenOrHideManager";
-import { ChapterSceneDirectoryManager, ChapterSceneType, ChpaterSceneTypeData } from "./ChapterSceneDirectoryManager";
+import { ChapterSceneType, ChpaterSceneTypeData } from "./ChapterSceneDirectoryManager";
 import { ChatTabEnum } from "../Data/EnumType";
 import { ChatMessageDataManager } from "./ChatMessageDataManager";
 import { GameProjectManager } from "./GameProjectManager";
@@ -28,6 +28,11 @@ import { ProjectBasicSettingsManagerRequest } from "../AutoCode/Net/ClientReques
 import { BackStoryData } from "BackStoryData";
 import { GalData } from "GalData";
 import { CharacterFactionType } from "./CharacterSettingManager";
+import { AppMain } from "../appMain";
+import { BuildType } from "../GameEnum";
+import { RoleSettingManager } from "./RoleSettingManager";
+import { BackgroundPictureManager } from "./BackgroundPictureManager";
+import { StoryImportManager } from "./StoryImportManager";
 
 export class PlayerGuideManager {
     public static get instance(): PlayerGuideManager {
@@ -47,6 +52,8 @@ export class PlayerGuideManager {
     public static isNewGuideBol = true;
     public static currentGuideIndex = -1;
     public static currentEditorGuideIndex = -1;
+
+    public static BtnStr = "";
     public init() {
     }
     //设置步骤字典
@@ -228,7 +235,12 @@ export class PlayerGuideManager {
                 ChatMessageDataManager.Instance.runGuideFinish(tab);
             }
         }, 1000);
-
+        if (AppMain.buildType == BuildType.StoryType) {
+            if (!UiManager.isUiShow(UiNames.Chatbackground)) {
+                //打开ai 对话界面
+                UIOpenOrHideManager.Instance.OpenChatbackgroundView();
+            }
+        }
     }
     //根据索引值 跳转到对应的ui  需要关闭当前的ui  并根据当前ui布局居中还是靠左，调整跳转后ui的位置 
     /**
@@ -424,7 +436,7 @@ export class PlayerGuideManager {
                 }
             }
             data.data = commondata;
-            if (UiManager.isUiShow(UiNames.Navigationbar)) {
+            if (UiManager.isUiShow(UiNames.NavigationBar)) {
                 UiDataManager.changeFunctionData(BindKeyName.refreshEditorUI, data);
             } else {
                 UIOpenOrHideManager.Instance.OpenNavigationBarView(data);
@@ -590,6 +602,180 @@ export class PlayerGuideManager {
             GameProjectManager.instance.sendGuideIndexToService();
         }
     }
+
+
+    public StoryGuideIndex(index: StoryIndexType) {
+        if (UiManager.isUiShow(UiNames.TutorialBackground)) {
+            UIOpenOrHideManager.Instance.HideTutorialBackgroundView();
+        }
+        if (UiManager.isUiShow(UiNames.CharacterSetting)) {
+            UIOpenOrHideManager.Instance.HideCharacterSettingView();
+        }
+        if (UiManager.isUiShow(UiNames.Basicsettings)) {
+            UIOpenOrHideManager.Instance.HideBasicsettingsView();
+        }
+        if (UiManager.isUiShow(UiNames.RoleSettings)) {
+            UIOpenOrHideManager.Instance.HideRoleSettingsView();
+        }
+        if (UiManager.isUiShow(UiNames.Chatbackground)) {
+            UIOpenOrHideManager.Instance.HideChatbackgroundView();
+        }
+        if (UiManager.isUiShow(UiNames.Guide)) {
+            UIOpenOrHideManager.Instance.HideGuideView();
+        }
+        if (UiManager.isUiShow(UiNames.SceneTalk)) {
+            UIOpenOrHideManager.Instance.HideSceneTalkView();
+        }
+        if (UiManager.isUiShow(UiNames.BackgroundPicture)) {
+            UIOpenOrHideManager.Instance.HideBackgroundPictureView();
+        }
+        switch (index) {
+            case StoryIndexType.storyImport:
+                let storyImport = new NavigationBarBackData();
+                storyImport.uiname = UiNames.TutorialBackground;
+                let commondata = new commonBackData();
+                commondata.CenterDisplayBol = false;
+                commondata.callBack = () => {
+                    console.log("引导按钮点击事件 回调 ==========================");
+                    UIOpenOrHideManager.Instance.OpenBasicsettingsView(false);
+
+                }
+                storyImport.data = commondata;
+                UIOpenOrHideManager.Instance.HideChatbackgroundView();
+                UIOpenOrHideManager.Instance.OpenNavigationBarView(storyImport);
+
+                StoryImportManager.Instance.AddRole();
+                break;
+            case StoryIndexType.BasicType:
+                UIOpenOrHideManager.Instance.OpenSpreadingPlateView("AI资源库");
+                setTimeout(() => {
+                    UIOpenOrHideManager.Instance.OpenCharacterSettingView(CharacterFactionType.role);
+                }, 50);
+                let guideData = new editorGuideData();
+                guideData.tips = "请完成红点角色的设定\n不然Ta就只能是旁白哦^_^";
+                let data = RoleSettingManager.instance.newGetCurentProjectRoles();
+                let bool = false;
+                for (let index = 0; index < data.length; index++) {
+                    const element = data[index];
+                    if (element.roleDrawing) {
+                        let normal = element.roleDrawing["normal"];
+                        if (normal) {
+                            bool = true;
+                            break;
+                        }
+                    }
+                }
+                if (bool) {
+                    guideData.btnStr = "下一步:章节场果目录";
+                } else {
+                    guideData.btnStr = "";
+                }
+                guideData.callBack = () => {
+                    UIOpenOrHideManager.Instance.HideNavigationBarView();
+                    setTimeout(() => {
+                        let storyImport = new NavigationBarBackData();
+                        storyImport.uiname = UiNames.TutorialBackground;
+                        let commondata = new commonBackData();
+                        commondata.CenterDisplayBol = false;
+                        commondata.callBack = () => {
+                            StoryImportManager.Instance.AddChapterScenes(StoryImportManager.Instance.dataImport.chapterData);
+                            console.log("引导按钮点击事件 回调 ==========================");
+                            let data: ChpaterSceneTypeData = new ChpaterSceneTypeData();
+                            data.CenterDisplayBol = false;
+                            data.chapterSceneUItype = ChapterSceneType.SceneType
+                            UIOpenOrHideManager.Instance.OpenChapterSceneMenuView(data);
+                        }
+                        storyImport.data = commondata;
+                        UIOpenOrHideManager.Instance.HideChatbackgroundView();
+                        UIOpenOrHideManager.Instance.OpenNavigationBarView(storyImport);
+                    }, 50)
+                };
+                UIOpenOrHideManager.Instance.OpenGuideView(guideData);
+                break;
+            case StoryIndexType.roleType:
+                UIOpenOrHideManager.Instance.HideNavigationBarView();
+                setTimeout(() => {
+                    let roleType = new NavigationBarBackData();
+                    roleType.uiname = UiNames.TutorialBackground;
+                    let commondata1 = new commonBackData();
+                    commondata1.CenterDisplayBol = false;
+                    commondata1.callBack = () => {
+                        console.log("引导按钮点击事件 回调 ==========================");
+                        UIOpenOrHideManager.Instance.OpenRoleSettingsView(false);
+
+                    }
+                    roleType.data = commondata1;
+                    UIOpenOrHideManager.Instance.OpenNavigationBarView(roleType);
+                }, 50);
+                break;
+            case StoryIndexType.SceneType:
+                UIOpenOrHideManager.Instance.HideNavigationBarView();
+                setTimeout(() => {
+                    let roleType = new NavigationBarBackData();
+                    roleType.uiname = UiNames.TutorialBackground;
+                    let commondata1 = new commonBackData();
+                    commondata1.CenterDisplayBol = false;
+                    commondata1.callBack = () => {
+                        console.log("引导按钮点击事件 回调 ==========================");
+                        UIOpenOrHideManager.Instance.OpenSceneTalkView(false);
+
+                    }
+                    roleType.data = commondata1;
+                    UIOpenOrHideManager.Instance.OpenNavigationBarView(roleType);
+                }, 50);
+                break;
+            case StoryIndexType.backgroundType:
+                UIOpenOrHideManager.Instance.OpenSpreadingPlateView("AI资源库");
+                setTimeout(() => {
+                    UIOpenOrHideManager.Instance.OpenCharacterSettingView(CharacterFactionType.backgroundPicture);
+                }, 50);
+                let guideData1 = new editorGuideData();
+                guideData1.tips = "请完成红点角色的设定\n不然Ta就只能是旁白哦^_^";
+                let background = BackgroundPictureManager.Instance.getbackgrounPictureList();
+                let boolbackground = false;
+                if (background.length > 0) {
+                    boolbackground = true;
+                }
+                if (boolbackground) {
+                    guideData1.btnStr = "下一步:运行场景";
+                } else {
+                    guideData1.btnStr = "";
+                }
+                guideData1.callBack = () => {
+                    UIOpenOrHideManager.Instance.HideNavigationBarView();
+                    setTimeout(() => {
+                        let storyImport = new NavigationBarBackData();
+                        storyImport.uiname = UiNames.TutorialBackground;
+                        let commondata = new commonBackData();
+                        commondata.CenterDisplayBol = false;
+                        commondata.callBack = () => {
+                            console.log("引导按钮点击事件 回调 ==========================");
+                            AppMain.buildType = BuildType.none;
+                            PlayerGuideManager.isNewGuideBol = false;
+
+                        }
+                        storyImport.data = commondata;
+                        UIOpenOrHideManager.Instance.HideChatbackgroundView();
+                        UIOpenOrHideManager.Instance.OpenNavigationBarView(storyImport);
+                    }, 50)
+                };
+                UIOpenOrHideManager.Instance.OpenGuideView(guideData1);
+                break;
+            default:
+                break;
+        }
+    }
+
+}
+
+
+export enum StoryIndexType {
+    storyImport,
+    BasicType,
+    roleType,
+    roleSaveType,
+    SceneType,
+    backgroundType
 
 }
 export class titleData {

@@ -86,6 +86,7 @@ export namespace CharacterSetting {
         public transform: m4m.framework.transform2D;
         public desbg_img: desbg_img = new desbg_img();
         public image1_btn: image1_btn = new image1_btn();
+        public redpoint_img: redpoint_img = new redpoint_img();
     }
     export class desbg_img {
         public transform: m4m.framework.transform2D;
@@ -126,6 +127,10 @@ export namespace CharacterSetting {
         public transform: m4m.framework.transform2D;
         public image: m4m.framework.image2D;
         public button: m4m.framework.button;
+    }
+    export class redpoint_img {
+        public transform: m4m.framework.transform2D;
+        public image: m4m.framework.image2D;
     }
     export class playbg {
         public transform: m4m.framework.transform2D;

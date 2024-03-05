@@ -16,13 +16,13 @@ limitations under the License.
  */
 import { UiNode, GridConfig } from "Data/GridExtend/GridExtend";
 import { ICellHandler } from "Data/GridExtend/ICellHandler";
-import { Navigationbar } from "./NavigationBar";
-import { NavigationbarView } from "./NavigationBarView";
+import { NavigationBar } from "./NavigationBar";
+import { NavigationBarView } from "./NavigationBarView";
 import { CommonUIUtils } from "Data/CommonUIUtils";
 import { PlayerGuideManager } from "Manager/PlayerGuideManager";
 
 export class NavigationBarTabCell implements ICellHandler {
-    nowClass: Navigationbar.filebg1;
+    nowClass: NavigationBar.filebg1;
     index: number;
     config: GridConfig;
     cellData: any;
@@ -35,7 +35,7 @@ export class NavigationBarTabCell implements ICellHandler {
             this.cellData = value;
             this.nowClass.filebg_img.transform.visible = false;
             this.nowClass.transform.visible = true;
-            let src = NavigationbarView.Instance.uiName + ".atlas.json_" + value + "a";
+            let src = NavigationBarView.Instance.uiName + ".atlas.json_" + value + "a";
             this.nowClass.file1_img.image.sprite = CommonUIUtils.getSprite(src);
         } else {
             this.nowClass.transform.visible = false;

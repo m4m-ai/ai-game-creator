@@ -19,9 +19,9 @@ import { GridExtend, ScrollType } from "Data/GridExtend/GridExtend";
 import { Step } from "Data/Process/Step";
 import { EditorManager } from "Manager/EditorManager";
 import { FunctionBinder, UiDataManager } from "PSDUI/UiDataManager";
-import { Navigationbar } from "./NavigationBar";
+import { NavigationBar } from "./NavigationBar";
 import { NavigationBarViewData } from "./NavigationBarViewData";
-import cellbg = Navigationbar.cellbg;
+import cellbg = NavigationBar.cellbg;
 import { NavigationBarCell } from "./NavigationBarCell";
 import { GameProjectManager } from "Manager/GameProjectManager";
 import { UiManager } from "PSDUI/UiManager";
@@ -34,14 +34,16 @@ import { PreloadState, ScenePreloadManager } from "Manager/ScenePreloadManager";
 import { SceneInfo } from "Data/SceneInfo";
 import { StepType } from "Data/Process/StepType";
 import { FrameMgr } from "Tools/FrameMgr";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
 // import layoutOption = m4m.framework.layoutOption;
 // import vector3 = m4m.math.vector3;
 // import transform = m4m.framework.transform;
 // import CullingMask = m4m.framework.CullingMask;
 // import { commTool } from "Tools/commTool";
 
-export class NavigationbarView extends Navigationbar.Navigationbar {
-    public static Instance: NavigationbarView;
+export class NavigationBarView extends NavigationBar.NavigationBar {
+    public static Instance: NavigationBarView;
     /**打开时不影响其他uiPage */
     public noAffected: boolean = true;
     /**其他面板show 时 不隐藏 */
@@ -51,7 +53,7 @@ export class NavigationbarView extends Navigationbar.Navigationbar {
 
     private binder: FunctionBinder
     private grid: GridExtend<cellbg, Step>;
-    private tabGrid: GridExtend<Navigationbar.filebg1>
+    private tabGrid: GridExtend<NavigationBar.filebg1>
 
     public onInit() {
         super.onInit();
@@ -119,6 +121,7 @@ export class NavigationbarView extends Navigationbar.Navigationbar {
         // });
 
         FrameMgr.Add(this.update, this);
+        this.popupbg2_img.transform.visible = false;
     }
 
 
@@ -191,7 +194,9 @@ export class NavigationbarView extends Navigationbar.Navigationbar {
 
     public onShowFunc(Data: NavigationBarBackData) {
         // this.tabGrid.selectIndex = 0;
-        GameProjectManager.isInEditorBol = true;
+        // if (AppMain.buildType == BuildType.AIType) {
+            GameProjectManager.isInEditorBol = true;
+        // }
         if (Data.uiname != "") {
             // UiManager.showUi(nextUIname, false);
             switch (Data.uiname) {

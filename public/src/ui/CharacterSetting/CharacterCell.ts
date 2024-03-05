@@ -57,8 +57,14 @@ export class CharacterCell implements ICellHandler {
                 // console.log("角色图片 ：", value.FileImage);
                 // CommonUIUtils.setTextureFun(this.nowClass.desbg_img.view_img.view1_raw.rawImage2D, value.FileImage);
                 //按照比例进行缩放 而非按照格子大小进行拉伸填充
-                CommonUIUtils.setTextureFuncProportionalScaling(this.nowClass.desbg_img.view_img.view1_raw.rawImage2D, value.FileImage);
+                if (value.FileImage) {
+                    this.nowClass.redpoint_img.transform.visible = false;
+                    CommonUIUtils.setTextureFuncProportionalScaling(this.nowClass.desbg_img.view_img.view1_raw.rawImage2D, value.FileImage);
+                } else {
+                    this.nowClass.redpoint_img.transform.visible = true;
+                }
             } else {//新建角色
+                this.nowClass.redpoint_img.transform.visible = false;
                 this.nowClass.desbg_img.time1_lab.label.text = value.FileName;
                 this.nowClass.image1_btn.transform.visible = true;
             }

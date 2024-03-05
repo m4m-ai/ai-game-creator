@@ -8,7 +8,7 @@ export * from "./Export";
 
 export const engineDiv = document.createElement("div");
 engineDiv.id = "gamecontainer";
-document.body.appendChild(engineDiv);
+document.getElementById("root").appendChild(engineDiv);
 
 // const logFunc = console.log;
 // const warnFunc = console.warn;

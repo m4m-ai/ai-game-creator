@@ -94,7 +94,8 @@ export class NetWebscoket {
         console.log("WebSocket连接成功! 开始链接服务器onopen");
         this._connected = true;
         if (!AppMain.EnableLogin) {
-            WebsocketTool.Instance.ProjectManager_login("llm", "");
+            // WebsocketTool.Instance.ProjectManager_login("llt1234567803454", "");
+            WebsocketTool.Instance.ProjectManager_login("llt12345678034", "");
             console.log("跳过注册步骤直接登录账号，第一次登陆即为注册账号，再次登录即成功");
             // WebsocketTool.Instance.ProjectManager_login("xl9", "");
         }

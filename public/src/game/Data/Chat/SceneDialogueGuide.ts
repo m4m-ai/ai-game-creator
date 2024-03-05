@@ -22,6 +22,8 @@ import { ChatGuide } from "./ChatGuide";
 import { BindKeyName } from "../BindKeyName";
 import { ChapterSceneDirectoryManager } from "../../Manager/ChapterSceneDirectoryManager";
 import { ChatApiType } from "../EnumType";
+import { AppMain } from "../../appMain";
+import { BuildType } from "../../GameEnum";
 
 const preinstall = ["主角进入新手村", "主角发现危机", "反派的阴谋"];
 let userMessage: string;
@@ -71,7 +73,7 @@ class SceneDialogueGuide0 extends ChatGuide {
 }
 
 class SceneDialogueGuide1 extends ChatGuide {
-    public message = `请简单描述一下在角色在这个场景发生的故事，我们会根据您描述的内容来生成角色对话内容。`;
+    public message =`请简单描述一下在角色在这个场景发生的故事，我们会根据您描述的内容来生成角色对话内容。`;
     public onUserActiveSendMessage(message: string): void {
 
     }
@@ -81,14 +83,26 @@ class SceneDialogueGuide1 extends ChatGuide {
     public customHanderChatRecordItem(chatItem: ChatRecordItem): void {
         ChatMessageDataManager.Instance.getChatTab(chatItem.originData.title).guideIndex = 2;
         //随机生成
-        chatItem.customButton = {
-            text: "随机生成",
-            callback: () => {
-                ChatMessageDataManager.Instance.getChatTab(chatItem.originData.title).guideIndex = 2;
-                userMessage = ChatGuide.randomChoose(preinstall);
-                ChatMessageDataManager.Instance.sendMessage(ChatMessageDataManager.Instance.selectTabTitle, userMessage, "随机生成");
-            }
-        };
+        if (AppMain.buildType == BuildType.StoryType) {
+            chatItem.customButton = {
+                text: "生成",
+                callback: () => {
+                    ChatMessageDataManager.Instance.getChatTab(chatItem.originData.title).guideIndex = 2;
+                    let SceneData = ChapterSceneDirectoryManager.Instance.SceneData;
+                    userMessage = SceneData.sceneName;
+                    ChatMessageDataManager.Instance.sendMessage(ChatMessageDataManager.Instance.selectTabTitle, userMessage, "生成");
+                }
+            };
+        } else {
+            chatItem.customButton = {
+                text: "随机生成",
+                callback: () => {
+                    ChatMessageDataManager.Instance.getChatTab(chatItem.originData.title).guideIndex = 2;
+                    userMessage = ChatGuide.randomChoose(preinstall);
+                    ChatMessageDataManager.Instance.sendMessage(ChatMessageDataManager.Instance.selectTabTitle, userMessage, "随机生成");
+                }
+            };
+        }
     }
 }
 
@@ -135,10 +149,10 @@ class SceneDialogueGuide2 extends ChatGuide {
 class SceneDialogueGuide3 extends ChatGuide {
     public message: string = "是否为您生成角色对话语音？";
     public onUserActiveSendMessage(message: string): void {
-        
+
     }
     public onGetUserSendMessageParam(message: string) {
-        
+
     }
     public customHanderChatRecordItem(chatItem: ChatRecordItem): void {
         chatItem.customButton = {
@@ -155,7 +169,7 @@ class SceneDialogueGuide4 extends ChatGuide {
     //public message: string = "是否为您生成角色对话语音？";
     public callApiType: ChatApiType = ChatApiType.sceneDaiglogVoices;
     public onUserActiveSendMessage(message: string): void {
-        
+
     }
     public onGetUserSendMessageParam(message: string) {
         let selectScene = ChapterSceneDirectoryManager.Instance.SceneData;
@@ -175,7 +189,7 @@ class SceneDialogueGuide4 extends ChatGuide {
             chatItem.customButton = {
                 text: "应用语音",
                 callback: () => {
-                    
+
                 }
             };
         }

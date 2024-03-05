@@ -50,7 +50,7 @@
 
     "types": [
       "../../lib/m4m",
-      "../../lib/dat.gui",
+      "../../lib/debug/dat.gui",
     ],
 
     //如果需要断点调试ts, 则不能配置 baseUrl 和 sourceRoot

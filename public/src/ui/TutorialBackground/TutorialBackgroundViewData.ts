@@ -20,6 +20,8 @@ import { TutorialBackgroundView } from "./TutorialBackgroundView";
 import { UiDataManager } from "PSDUI/UiDataManager";
 import { BindKeyName } from "Data/BindKeyName";
 import { GameProjectManager } from "Manager/GameProjectManager";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
 
 export class TutorialBackgroundViewData implements ViewBaseData {
     public constructor() {
@@ -30,6 +32,12 @@ export class TutorialBackgroundViewData implements ViewBaseData {
     public setTitleDataFun() {
         let titleDic = PlayerGuideManager.instance.getbasicDic();
         let titleData = titleDic.get(PlayerGuideManager.instance.guideStepIndex);
+        if(AppMain.buildType == BuildType.StoryType){
+            TutorialBackgroundView.Instance.title2_lab_text("AI资源库");
+            TutorialBackgroundView.Instance.bg1.titlebg_img.poreviousstepbg_btn.transform.visible = false;
+            TutorialBackgroundView.Instance.bg1.titlebg_img.nextbg_btn.transform.visible = false;
+            return;
+        }
         if (GameProjectManager.isInEditorBol) {//编辑器中
             TutorialBackgroundView.Instance.title2_lab_text("AI资源库");
             TutorialBackgroundView.Instance.bg1.titlebg_img.poreviousstepbg_btn.transform.visible = false;

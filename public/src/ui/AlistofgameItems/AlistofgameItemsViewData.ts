@@ -30,6 +30,14 @@ import { BindKeyName } from "Data/BindKeyName";
 import { GalManagerRequest } from "AutoCode/Net/ClientRequest/GalManagerRequest";
 import { RoleSettingManager } from "Manager/RoleSettingManager";
 import { GalData } from "GalData";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
+import { ChatTabEnum } from "Data/EnumType";
+import { NewgameData, NewgameManager } from "Manager/NewgameManager";
+import { GamedescData, GamedescManager } from "Manager/GamedescManager";
+import { ProjectBasicSettingsManagerRequest } from "AutoCode/Net/ClientRequest/ProjectBasicSettingsManagerRequest";
+import { WebsocketTool } from "AutoCode/Net/WebsocketTool";
+import { ExcelManagerRequest } from "AutoCode/Net/ClientRequest/ExcelManagerRequest";
 
 export class AlistofgameItemsViewData implements ViewBaseData {
     public binder: FunctionBinder;
@@ -44,8 +52,22 @@ export class AlistofgameItemsViewData implements ViewBaseData {
             v.hide();
         });
     }
-    public onCreateProjectFun(projectData) {
+    public onCreateProjectFun(projectData: Entity.GalData) {
         console.log("新创建的项目 数据 ：", projectData);
+
+        switch (AppMain.buildType) {
+            case BuildType.AIType:
+                this.AICreateProject();
+                break;
+            case BuildType.StoryType:
+                this.StoryCreateProject();
+                break;
+            default:
+                break;
+        }
+    }
+    /**AI引导创建项目 */
+    private AICreateProject() {
         PlayerGuideManager.instance.guideStepIndex = 0;
         UIOpenOrHideManager.Instance.HideAlistofgameItemsView();
         if (PlayerGuideManager.instance.guideStepIndex > PlayerGuideManager.currentGuideIndex) {
@@ -63,6 +85,23 @@ export class AlistofgameItemsViewData implements ViewBaseData {
             UIOpenOrHideManager.Instance.OpenBasicsettingsView();
         }
         UIOpenOrHideManager.Instance.OpenTutorialBackgroundView(commondata);
+    };
+
+
+
+    private StoryCreateProject() {
+        UIOpenOrHideManager.Instance.HideAlistofgameItemsView();
+        // let tipsDic = PlayerGuideManager.instance.getDescribeDic();
+        // let tips = tipsDic.get(PlayerGuideManager.instance.guideStepIndex);
+        // let guideData = new editorGuideData();
+        // guideData.tips = tips;
+        // guideData.btnStr = "";
+        // UIOpenOrHideManager.Instance.OpenGuideView(guideData);
+        if (AppMain.buildBool) {
+            PlayerGuideManager.instance.changeChatTabFun(ChatTabEnum.autoImport);
+        } else {
+            PlayerGuideManager.instance.changeChatTabFun(ChatTabEnum.storyImport);
+        }
     }
     public OpenTipPanel(index: number) {
         // console.log("选中了格子， 显示操作气泡", index);
@@ -84,6 +123,8 @@ export class AlistofgameItemsViewData implements ViewBaseData {
                     rightBtnCallBack: (str: string) => {
                         UIOpenOrHideManager.Instance.HideBottomslabView();
                         if (GameProjectManager.instance.GameDataArr) {
+                            ProjectBasicSettingsManagerRequest.Instance.deleteGalPreviewData(cellData.id, "已删除");
+                            // ExcelManagerRequest.Instance.removeGalPreviewDataData(cellData.id);
                             GameProjectManager.instance.GameDataArr.splice(index, 1);
                             // console.log("删除游戏后的数据 ：", GameProjectManager.instance.GameDataArr);
                             //刷新一下游戏列表ui 
@@ -123,7 +164,7 @@ export class AlistofgameItemsViewData implements ViewBaseData {
     }
     public setCommonPoupData() {
         CommonPoupManager.instance.openCommonPopupFun({
-            titleStr: "新建游戏", leftBtnBol: true, midBtnBol: true, rightBtnBol: true, leftbtnStr: "取消", midbtnStr: "专业模式", rightbtnStr: "AI引导模式",
+            titleStr: "新建游戏", leftBtnBol: true, midBtnBol: true, rightBtnBol: true, leftbtnStr: "取消", midbtnStr: "一键生成", rightbtnStr: "AI引导模式",
             showDescribBol: true, describeStr: "您想使用那种方式创作游戏？\nAI引导模式：全程AI引导创作，适合新人使用\n专业模式:直接进入编辑器，可以自行使用AI进行创作", changeLineBol: true,
             leftBtnCallBack: () => {
                 // console.log("左侧按钮回调");
@@ -199,27 +240,61 @@ export class AlistofgameItemsViewData implements ViewBaseData {
         return time;
     }
     public GotoGuideFun() {
-        CommonPoupManager.instance.openCommonPopupFun({
-            titleStr: "新建游戏", leftBtnBol: true, midBtnBol: true, rightBtnBol: true, leftbtnStr: "取消", midbtnStr: "专业模式", rightbtnStr: "AI引导模式",
-            showDescribBol: true, changeLineBol: true, describeStr: "您想使用那种方式创作游戏？\nAI引导模式：全程AI引导创作，适合新人使用\n专业模式:直接进入编辑器，可以自行使用AI进行创作",
-            showFirstInputFiledBol: false, firstInputTitle: "", firstInputDefaultTitle: "",
-            showSecondBol: false, secondTitle: "", secondDefaultTitle: "",
+        let data: NewgameData = {
+            descStr: "您想使用那种方式创作游戏？\nAI引导模式：全程AI引导创作，适合新人使用\n专业模式:直接进入编辑器，可以自行使用AI进行创作",
+            titleStr: "新建游戏",
+            leftbtnStr: "一键生成",
+            midbtnStr: "AI引导模式",
+            rightbtnStr: "故事模式",
+            uploadBtnStr: "取消",
             leftBtnCallBack: () => {
-                // console.log("左侧按钮回调");
-                UIOpenOrHideManager.Instance.HideBottomslabView();
-            },
-            rightBtnCallBack: (str: string) => {
-                UIOpenOrHideManager.Instance.HideBottomslabView();
-                this.AICreate();
+                UIOpenOrHideManager.Instance.HideNewgameView();
+                AppMain.buildBool = true;
+                this.StoryCreate();
             },
             midBtnCallBack: () => {
-                UIOpenOrHideManager.Instance.OpenStoragePathView((StoragePath: string) => {
-
-                    //派发事件 修改路径
-                    UiDataManager.changeFunctionData(BindKeyName.ModifyPath, StoragePath);
-                });
+                UIOpenOrHideManager.Instance.HideNewgameView();
+                AppMain.buildBool = false;
+                this.AICreate();
             },
-        });
+            rightBtnCallBack: () => {
+                UIOpenOrHideManager.Instance.HideNewgameView();
+                AppMain.buildBool = false;
+                this.StoryCreate();
+            },
+            uploadBtnCallBack: () => {
+                UIOpenOrHideManager.Instance.HideNewgameView();
+            }
+        }
+        NewgameManager.instance.openNewgameFun(data)
+        // CommonPoupManager.instance.openCommonPopupFun({
+        //     titleStr: "新建游戏", leftBtnBol: true, midBtnBol: true, rightBtnBol: true, rightBtnBol2: true, leftbtnStr: "取消", midbtnStr: "一键生成", rightbtnStr: "AI引导模式", rightbtnStr2: "故事模式",
+        //     showDescribBol: true, changeLineBol: true, describeStr: "您想使用那种方式创作游戏？\nAI引导模式：全程AI引导创作，适合新人使用\n专业模式:直接进入编辑器，可以自行使用AI进行创作",
+        //     showFirstInputFiledBol: false, firstInputTitle: "", firstInputDefaultTitle: "",
+        //     showSecondBol: false, secondTitle: "", secondDefaultTitle: "",
+        //     leftBtnCallBack: () => {
+        //         // console.log("左侧按钮回调");
+        //         UIOpenOrHideManager.Instance.HideBottomslabView();
+        //     },
+        //     rightBtnCallBack: (str: string) => {
+        //         UIOpenOrHideManager.Instance.HideBottomslabView();
+        //         this.AICreate();
+        //     },
+        //     midBtnCallBack: () => {
+        //         UIOpenOrHideManager.Instance.HideBottomslabView();
+        //         AppMain.buildBool = true;
+        //         this.StoryCreate();
+        //         // UIOpenOrHideManager.Instance.OpenStoragePathView((StoragePath: string) => {
+
+        //         //     //派发事件 修改路径
+        //         //     UiDataManager.changeFunctionData(BindKeyName.ModifyPath, StoragePath);
+        //         // });
+        //     },
+        //     rightBtnCallBack2: () => {
+        //         UIOpenOrHideManager.Instance.HideBottomslabView();
+        //         this.StoryCreate();
+        //     }
+        // });
         PlayerGuideManager.isNewGuideBol = true;
         GameProjectManager.isCreateNewProject = true;
         RoleSettingManager.instance.currentRoleID = "";
@@ -271,15 +346,15 @@ export class AlistofgameItemsViewData implements ViewBaseData {
     }
 
     public AICreate() {
-        CommonPoupManager.instance.openCommonPopupFun({
-            titleStr: "新建游戏", leftBtnBol: true, midBtnBol: false, rightBtnBol: true, leftbtnStr: "取消", midbtnStr: "", rightbtnStr: "创建",
-            showFirstInputFiledBol: true, firstInputTitle: "游戏名", firstInputDefaultTitle: "请输入游戏名",
-            showSecondBol: true, secondTitle: "储存路径", secondDefaultTitle: "/项目默认路径",
+        let data: GamedescData = {
+            titleStr: "新建游戏",
+            leftbtnStr: "取消",
+            rightbtnStr: "创建",
             leftBtnCallBack: () => {
-                // console.log("左侧按钮回调");
-                UIOpenOrHideManager.Instance.HideBottomslabView();
+                UIOpenOrHideManager.Instance.HideGamedescView();
             },
-            rightBtnCallBack: (str: string) => {
+            rightBtnCallBack: (str) => {
+                AppMain.buildType = BuildType.AIType;
                 // console.log("AI引导模式你 :", str);
                 let id = RoleSettingManager.instance.creatUuid();
                 //let name = str;
@@ -287,18 +362,99 @@ export class AlistofgameItemsViewData implements ViewBaseData {
                 console.log("id +++++ ", id);
                 //向服务器发送创建新 gal 项目
                 GalManagerRequest.Instance.CreatAGal(id, str);
-                UIOpenOrHideManager.Instance.HideBottomslabView();
-
+                UIOpenOrHideManager.Instance.HideGamedescView();
             },
-            uploadBtnCallBack: () => {
-                // console.log("修改路径按钮");
-                UIOpenOrHideManager.Instance.OpenStoragePathView((StoragePath: string) => {
+            firstInputTitle: "游戏名",
+            firstInputDefaultTitle: "请输入游戏名",
+            secondTitle: "储存路径",
+            secondDefaultTitle: "/项目默认路径"
+        }
+        GamedescManager.instance.openGamedescFun(data);
+        // CommonPoupManager.instance.openCommonPopupFun({
+        //     titleStr: "新建游戏", leftBtnBol: true, midBtnBol: false, rightBtnBol: true, leftbtnStr: "取消", midbtnStr: "", rightbtnStr: "创建",
+        //     showFirstInputFiledBol: true, firstInputTitle: "游戏名", firstInputDefaultTitle: "请输入游戏名",
+        //     showSecondBol: true, secondTitle: "储存路径", secondDefaultTitle: "/项目默认路径",
+        //     leftBtnCallBack: () => {
+        //         // console.log("左侧按钮回调");
+        //         UIOpenOrHideManager.Instance.HideBottomslabView();
+        //     },
+        //     rightBtnCallBack: (str: string) => {
+        //         AppMain.buildType = BuildType.AIType;
+        //         // console.log("AI引导模式你 :", str);
+        //         let id = RoleSettingManager.instance.creatUuid();
+        //         //let name = str;
+        //         //console.log("name", str);
+        //         console.log("id +++++ ", id);
+        //         //向服务器发送创建新 gal 项目
+        //         GalManagerRequest.Instance.CreatAGal(id, str);
+        //         UIOpenOrHideManager.Instance.HideBottomslabView();
 
-                    //派发事件 修改路径
-                    UiDataManager.changeFunctionData(BindKeyName.ModifyPath, StoragePath);
-                });
+        //     },
+        //     uploadBtnCallBack: () => {
+        //         // console.log("修改路径按钮");
+        //         UIOpenOrHideManager.Instance.OpenStoragePathView((StoragePath: string) => {
+
+        //             //派发事件 修改路径
+        //             UiDataManager.changeFunctionData(BindKeyName.ModifyPath, StoragePath);
+        //         });
+        //     },
+        // });
+
+    }
+
+    public StoryCreate() {
+        let data: GamedescData = {
+            titleStr: "新建游戏",
+            leftbtnStr: "取消",
+            rightbtnStr: "创建",
+            leftBtnCallBack: () => {
+                UIOpenOrHideManager.Instance.HideGamedescView();
             },
-        });
+            rightBtnCallBack: (str) => {
+                AppMain.buildType = BuildType.StoryType;
+                // console.log("AI引导模式你 :", str);
+                let id = RoleSettingManager.instance.creatUuid();
+                //let name = str;
+                //console.log("name", str);
+                console.log("id +++++ ", id);
+                //向服务器发送创建新 gal 项目
+                GalManagerRequest.Instance.CreatAGal(id, str);
+                UIOpenOrHideManager.Instance.HideGamedescView();
+            },
+            firstInputTitle: "游戏名",
+            firstInputDefaultTitle: "请输入游戏名",
+            secondTitle: "储存路径",
+            secondDefaultTitle: "/项目默认路径"
+        }
+        GamedescManager.instance.openGamedescFun(data);
+        // CommonPoupManager.instance.openCommonPopupFun({
+        //     titleStr: "新建游戏", leftBtnBol: true, midBtnBol: false, rightBtnBol: true, rightBtnBol2: false, leftbtnStr: "取消", midbtnStr: "", rightbtnStr: "创建",
+        //     showFirstInputFiledBol: true, firstInputTitle: "游戏名", firstInputDefaultTitle: "请输入游戏名",
+        //     showSecondBol: true, secondTitle: "储存路径", secondDefaultTitle: "/项目默认路径",
+        //     leftBtnCallBack: () => {
+        //         // console.log("左侧按钮回调");
+        //         UIOpenOrHideManager.Instance.HideBottomslabView();
+        //     },
+        //     rightBtnCallBack: (str: string) => {
+        //         AppMain.buildType = BuildType.StoryType;
+        //         // console.log("AI引导模式你 :", str);
+        //         let id = RoleSettingManager.instance.creatUuid();
+        //         //let name = str;
+        //         //console.log("name", str);
+        //         console.log("id +++++ ", id);
+        //         //向服务器发送创建新 gal 项目
+        //         GalManagerRequest.Instance.CreatAGal(id, str);
+        //         UIOpenOrHideManager.Instance.HideBottomslabView();
 
+        //     },
+        //     uploadBtnCallBack: () => {
+        //         // console.log("修改路径按钮");
+        //         UIOpenOrHideManager.Instance.OpenStoragePathView((StoragePath: string) => {
+
+        //             //派发事件 修改路径
+        //             UiDataManager.changeFunctionData(BindKeyName.ModifyPath, StoragePath);
+        //         });
+        //     },
+        // });
     }
 }

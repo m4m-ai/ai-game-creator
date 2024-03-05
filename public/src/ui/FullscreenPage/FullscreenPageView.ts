@@ -44,6 +44,7 @@ export class FullscreenPageView extends FullscreenPage.FullscreenPage {
         //let bgScr = GameMgr.texttype + "bg.png";
         //CommonUIUtils.setTextureFun(this.bg_raw.rawImage2D, bgScr);
         FrameMgr.Add(this.onUpdate, this);
+        this.titlebg1_img.titlebg.loog_img.transform.visible = false;
     }
     private AIbtnFun() {
         console.log("点击了 ai 按钮");

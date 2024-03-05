@@ -19,7 +19,7 @@ import { UIOpenOrHideManager } from "Manager/UIOpenOrHideManager";
 import { Basicsettings } from "./Basicsettings";
 import { BasicsettingsViewData } from "./BasicsettingsViewData";
 import { GridExtend, ScrollType } from "Data/GridExtend/GridExtend";
-import { EditorGuideType, GuideIndexType, PlayerGuideManager, guideUIName } from "Manager/PlayerGuideManager";
+import { EditorGuideType, GuideIndexType, PlayerGuideManager, StoryIndexType, guideUIName } from "Manager/PlayerGuideManager";
 import { ProjectBasicSettingsManagerRequest } from "AutoCode/Net/ClientRequest/ProjectBasicSettingsManagerRequest";
 import { EditUIType, GameProjectManager } from "Manager/GameProjectManager";
 import { BackStoryData } from "BackStoryData";
@@ -27,6 +27,8 @@ import { FrameMgr } from "Tools/FrameMgr";
 import { AIResourceManager } from "Manager/AIResourceManager";
 import { UiNames } from "Manager/UIData/UiNames";
 import { BasicsettingsArtStyleCell } from "./BasicsettingsArtStyleCell";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
 
 export class BasicsettingsView extends Basicsettings.Basicsettings {
     public static Instance: BasicsettingsView;
@@ -81,21 +83,26 @@ export class BasicsettingsView extends Basicsettings.Basicsettings {
         FrameMgr.Add(this.updateFun, this);
     }
     private SaveBtnFun() {
-        if (this.canSaveBol) {
-            let gameName = this.bg1.bg2.searchbg1.iuput_inp.inputField.text;
-            let gameBackground = this.bg1.bg2.setbg1.textinput_inp.inputField.text;
-            // //点击保存，向服务器发送保存消息
-            if (gameName != "" && gameName != "请输入游戏名" && gameName != this.currentBackstoryData.worldName) {
-                this.currentBackstoryData.worldName = gameName;
-                GameProjectManager.instance.currentBackStoryData.worldName = gameName;
+        if (AppMain.buildType == BuildType.StoryType) {
+            PlayerGuideManager.instance.StoryGuideIndex(StoryIndexType.BasicType);
+
+        } else if (AppMain.buildType == BuildType.AIType) {
+            if (this.canSaveBol) {
+                let gameName = this.bg1.bg2.searchbg1.iuput_inp.inputField.text;
+                let gameBackground = this.bg1.bg2.setbg1.textinput_inp.inputField.text;
+                // //点击保存，向服务器发送保存消息
+                if (gameName != "" && gameName != "请输入游戏名" && gameName != this.currentBackstoryData.worldName) {
+                    this.currentBackstoryData.worldName = gameName;
+                    GameProjectManager.instance.currentBackStoryData.worldName = gameName;
+                }
+                if (gameBackground != "" && gameBackground != "请设置背景设定..." && gameBackground != this.currentBackstoryData.backStory) {
+                    this.currentBackstoryData.backStory = gameBackground;
+                    GameProjectManager.instance.currentBackStoryData.backStory = gameBackground;
+                }
+                UIOpenOrHideManager.Instance.HideBasicsettingsView();
+                UIOpenOrHideManager.Instance.HideTutorialBackgroundView();
+                PlayerGuideManager.instance.newSetUIshowByIndex(true, guideUIName.Basicsettings, EditorGuideType.editorGameBasicSettingSave);
             }
-            if (gameBackground != "" && gameBackground != "请设置背景设定..." && gameBackground != this.currentBackstoryData.backStory) {
-                this.currentBackstoryData.backStory = gameBackground;
-                GameProjectManager.instance.currentBackStoryData.backStory = gameBackground;
-            }
-            UIOpenOrHideManager.Instance.HideBasicsettingsView();
-            UIOpenOrHideManager.Instance.HideTutorialBackgroundView();
-            PlayerGuideManager.instance.newSetUIshowByIndex(true, guideUIName.Basicsettings, EditorGuideType.editorGameBasicSettingSave);
         }
     }
 
@@ -185,6 +192,7 @@ export class BasicsettingsView extends Basicsettings.Basicsettings {
                 this.setNewBackstoryDataFun();
             }
         }
+
         if (GameProjectManager.isInEditorBol) {
             this.bg3.transform.visible = true;
             this.bg3.naturalbtnbg.ashbg3_btn.transform.visible = false;
@@ -193,6 +201,11 @@ export class BasicsettingsView extends Basicsettings.Basicsettings {
             this.bg3.transform.visible = false;
             this.bg1.savebg_btn.transform.visible = true;
             // this.unchecked_lab_text("保存");
+        }
+
+        if (AppMain.buildType == BuildType.StoryType && PlayerGuideManager.isNewGuideBol) {
+            this.bg3.transform.visible = false;
+            this.bg1.savebg_btn.transform.visible = true;
         }
         if (CenterDisplayBol) {
             let totalWidth = this.bg.transform.width;
@@ -224,6 +237,16 @@ export class BasicsettingsView extends Basicsettings.Basicsettings {
     }
     private canSaveBol = false;
     public updateFun() {
+        if (AppMain.buildType == BuildType.StoryType && PlayerGuideManager.isNewGuideBol) {
+            if (this.bg1.bg2.searchbg1.iuput_inp.inputField.text != "" && this.bg1.bg2.setbg1.textinput_inp.inputField.text != "") {
+                this.bg1.savebg_btn.savebg1_img.transform.visible = false;
+                this.canSaveBol = true;
+            } else {
+                this.bg1.savebg_btn.savebg1_img.transform.visible = true;
+                this.canSaveBol = false;
+            }
+            return;
+        }
         if (GameProjectManager.isInEditorBol) {
             if (this.bg1.bg2.searchbg1.iuput_inp.inputField.text != "" && this.bg1.bg2.setbg1.textinput_inp.inputField.text != "") {
                 this.bg3.naturalbtnbg.ashbg1_btn.transform.visible = false;

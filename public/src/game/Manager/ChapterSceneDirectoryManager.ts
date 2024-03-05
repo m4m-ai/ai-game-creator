@@ -27,14 +27,15 @@ import { UiDataManager } from "PSDUI/UiDataManager";
 import { BindKeyName } from "../Data/BindKeyName";
 import { ChapterInfo } from "../Data/ChapterInfo";
 import { EditorManager } from "./EditorManager";
-import { BackgroundMusicManager } from "./BackgroundMusicManager";
 import { BackgroundPictureManager } from "./BackgroundPictureManager";
+import { VoiceBase } from "VoiceBase";
+import { cMap } from "Data/Map";
 
 /**不同路径打开章节场景目录显示不一样 */
 export enum ChapterSceneType {
-    /**ai引导创建章节创建类型 */
+    /**ai引导创建章节创建类型/故事模式 */
     ChapterType,
-    /**ai引导选择场景类型 */
+    /**ai引导选择场景类型 /故事模式*/
     SceneType,
     /**ai资源库场景对话类型 */
     AITalkResource,
@@ -57,6 +58,10 @@ export class ChapterSceneDirectoryManager {
     /** 当前选中的场景 */
     public SceneData: SceneInfo;
 
+    public maleList: VoiceBase[] = []
+
+    public femaleList: VoiceBase[] = []
+
     private constructor() {
 
     }
@@ -64,6 +69,17 @@ export class ChapterSceneDirectoryManager {
         WsDataManager.ChapterDataData.addEventListener(ChapterDataEvent.All, this.chapterData.bind(this));
         WsDataManager.SceneDataData.addEventListener(SceneDataEvent.All, this.sceneData.bind(this));
         UiDataManager.bindFunctionData(BindKeyName.getGalDataById, this.galDataby);
+
+        VoiceBase.getAllDataCallBack((data: cMap<VoiceBase>) => {
+            console.log(data);
+            data.forEach((res) => {
+                if (res.Gender == 0) {
+                    this.maleList.push(res)
+                } else if (res.Gender == 1) {
+                    this.femaleList.push(res);
+                }
+            })
+        })
     }
 
     public galDataby(result: Entity.GalData) {
@@ -87,8 +103,8 @@ export class ChapterSceneDirectoryManager {
         EditorManager.Instance.initChapterSceneStep();
         for (const key in result.BackGrounds) {
             const element = result.BackGrounds[key];
-            if(element){
-              BackgroundPictureManager.Instance.GetBackGround(element);
+            if (element) {
+                BackgroundPictureManager.Instance.GetBackGround(element);
             }
         }
     }

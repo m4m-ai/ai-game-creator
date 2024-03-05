@@ -36,11 +36,15 @@ import { ChatGuideManager } from "./Manager/ChatGuideManager";
 import { AIResourceManager } from "./Manager/AIResourceManager";
 import { ScenePreloadManager } from "./Manager/ScenePreloadManager";
 import { DatGUITool } from "./Tools/datGUITool";
+import { BuildType } from "./GameEnum";
+import { DebugPanel } from "Tools/DebugPanel";
 
 /** core enter point */
 export class AppMain {
     public static EnableLogin: boolean;
     public static ResUrl: string;
+    public static buildType: BuildType;
+    public static buildBool = false;
     constructor() {
         //init
         console.log(`appMain inited`);
@@ -90,7 +94,9 @@ export class AppMain {
         }
         //gameMgr
         GameMgr.init(app);
-        DatGUITool.runGameGUI();
+        //DatGUITool.runGameGUI();
+        DebugPanel.init();
+
 
         //AssembleCreatUI 组装UI类
         AssembleCreatUI.init(PlatformUtil.systemQuality, PlatformUtil.WXGetSystemPlatformType, GameMgr.pathReplaceMap);
@@ -157,9 +163,9 @@ export class AppMain {
             //连接服务器
             AppMain.EnableLogin = obj.EnableLogin;
             AppMain.ResUrl = obj.ResUrl;
-            ScenePreloadManager.Instance.preloadLength=obj.PreloadLength;
-            ScenePreloadManager.Instance._preloadNum=obj.PreloadNum;
-            ScenePreloadManager.Instance.firstPreloadLength=obj.FirstPreloadLength;
+            ScenePreloadManager.Instance.preloadLength = obj.PreloadLength;
+            ScenePreloadManager.Instance._preloadNum = obj.PreloadNum;
+            ScenePreloadManager.Instance.firstPreloadLength = obj.FirstPreloadLength;
             NetWebscoket.Instance.connect(obj.SERVER_ID);
             if (AppMain.EnableLogin) {
                 UIOpenOrHideManager.Instance.OpenLogonView();

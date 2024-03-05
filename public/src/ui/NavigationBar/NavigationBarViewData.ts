@@ -17,7 +17,7 @@ limitations under the License.
 import { BindKeyName } from "Data/BindKeyName";
 import { ViewBaseData } from "Data/ViewBaseData";
 import { FunctionBinder, UiDataManager } from "PSDUI/UiDataManager";
-import { NavigationbarView } from "./NavigationBarView";
+import { NavigationBarView } from "./NavigationBarView";
 import { commonBackData, NavigationBarBackData, UIOpenOrHideManager } from "Manager/UIOpenOrHideManager";
 import { UiNames } from "Manager/UIData/UiNames";
 import { UiManager } from "PSDUI/UiManager";
@@ -25,12 +25,12 @@ import { AIResourceManager, resourceType } from "Manager/AIResourceManager";
 import { ChapterSceneType, ChpaterSceneTypeData } from "Manager/ChapterSceneDirectoryManager";
 export class NavigationBarViewData implements ViewBaseData {
 
-    private view: NavigationbarView;
+    private view: NavigationBarView;
     private binder: FunctionBinder;
     private refreshBinder: FunctionBinder;
     public lastTabIndex = -1;
     private onexit: FunctionBinder;
-    constructor(view: NavigationbarView) {
+    constructor(view: NavigationBarView) {
         this.view = view;
         this.binder = UiDataManager.bindFunctionData(BindKeyName.OnChangeScene, this.onChangeScene.bind(this));
         this.refreshBinder = UiDataManager.bindFunctionData(BindKeyName.refreshEditorUI, this.refreshEditorUI.bind(this));
@@ -106,7 +106,7 @@ export class NavigationBarViewData implements ViewBaseData {
     }
     public onExitPlay() {
         console.log("退出播放");
-        NavigationbarView.Instance.onExitPlay();
+        NavigationBarView.Instance.onExitPlay();
     }
 
     public dispose() {

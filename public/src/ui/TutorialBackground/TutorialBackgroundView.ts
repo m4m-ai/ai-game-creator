@@ -21,6 +21,8 @@ import { PlayerGuideManager } from "Manager/PlayerGuideManager";
 import { ChapterSceneDirectoryManager, ChapterSceneType } from "Manager/ChapterSceneDirectoryManager";
 import { commonBackData } from "Manager/UIOpenOrHideManager";
 import { GameProjectManager } from "Manager/GameProjectManager";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
 export class TutorialBackgroundView extends TutorialBackground.TutorialBackground {
     /**打开时不影响其他uiPage */
     public noAffected: boolean = true;
@@ -83,6 +85,11 @@ export class TutorialBackgroundView extends TutorialBackground.TutorialBackgroun
             this.bg1.transform.markDirty();
 
         } else {
+            if (AppMain.buildType == BuildType.StoryType) {
+                this.bg1.transform.setLayoutValue(m4m.framework.layoutOption.LEFT, GameProjectManager.leftShifting);
+                this.bg1.transform.setLayoutValue(m4m.framework.layoutOption.BOTTOM, 122);
+                this.bg1.transform.markDirty();
+            }
             if (GameProjectManager.isInEditorBol) {
                 this.bg1.transform.setLayoutValue(m4m.framework.layoutOption.LEFT, GameProjectManager.leftShifting);
                 this.bg1.transform.setLayoutValue(m4m.framework.layoutOption.BOTTOM, 122);

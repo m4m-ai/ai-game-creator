@@ -21,12 +21,15 @@ import { ChatRecordItem } from "../DataType";
 import { ChatGuide } from "./ChatGuide";
 import { ChapterSceneDirectoryManager } from "../../Manager/ChapterSceneDirectoryManager";
 import { ChatApiType } from "../EnumType";
+import { AppMain } from "../../appMain";
+import { BuildType } from "../../GameEnum";
 
 let userMessage: string;
 const preinstall = ["花园", "森林", "村庄", "农田"];
 
 class BackgroundImageGuide0 extends ChatGuide {
     public message = `您好！我是AI，请简单描述一下当前场景，我们会为您生成场景背景图片。`;
+
     public onUserActiveSendMessage(message: string): void {
 
     }
@@ -35,14 +38,28 @@ class BackgroundImageGuide0 extends ChatGuide {
     }
     public customHanderChatRecordItem(chatItem: ChatRecordItem): void {
         ChatMessageDataManager.Instance.getChatTab(chatItem.originData.title).guideIndex = 1;
-        //随机生成
-        chatItem.customButton = {
-            text: "随机生成",
-            callback: () => {
-                userMessage = ChatGuide.randomChoose(preinstall);
-                ChatMessageDataManager.Instance.sendMessage(ChatMessageDataManager.Instance.selectTabTitle, userMessage, "随机生成");
-            }
-        };
+
+        if (AppMain.buildType == BuildType.StoryType) {
+            //随机生成
+            chatItem.customButton = {
+                text: "生成",
+                callback: () => {
+                    // userMessage = ChatGuide.randomChoose(preinstall);
+                    let SceneData = ChapterSceneDirectoryManager.Instance.SceneData;
+                    userMessage = SceneData.sceneName;
+                    ChatMessageDataManager.Instance.sendMessage(ChatMessageDataManager.Instance.selectTabTitle, userMessage, "生成");
+                }
+            };
+        } else {
+            //随机生成
+            chatItem.customButton = {
+                text: "随机生成",
+                callback: () => {
+                    userMessage = ChatGuide.randomChoose(preinstall);
+                    ChatMessageDataManager.Instance.sendMessage(ChatMessageDataManager.Instance.selectTabTitle, userMessage, "随机生成");
+                }
+            };
+        }
     }
 }
 
@@ -74,7 +91,7 @@ class BackgroundImageGuide1 extends ChatGuide {
         return {
             sceneId: selectScene.id,
             chapterId: selectScene.chapter.id,
-            chatID:null,
+            chatID: null,
         }
     }
     public customHanderChatRecordItem(chatItem: ChatRecordItem): void {
@@ -97,9 +114,9 @@ class BackgroundImageGuide1 extends ChatGuide {
                 text: "生成更多",
                 callback: (chatID: string) => {
                     // console.error(chatID + "  %%  " + userMessage);
-                    let param=this.onGetUserSendMessageParam();
-                    param["chatID"]=chatID;
-                    ChatMessageDataManager.Instance.sendMessage(ChatMessageDataManager.Instance.selectTabTitle, userMessage, "",param);
+                    let param = this.onGetUserSendMessageParam();
+                    param["chatID"] = chatID;
+                    ChatMessageDataManager.Instance.sendMessage(ChatMessageDataManager.Instance.selectTabTitle, userMessage, "", param);
                 }
             };
         }

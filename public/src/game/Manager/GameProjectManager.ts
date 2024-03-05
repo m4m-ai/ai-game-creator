@@ -19,10 +19,9 @@ import { WebsocketTool } from "../AutoCode/Net/WebsocketTool";
 import { WsDataManager } from "../AutoCode/Net/WsDataManager";
 import { UiDataManager } from "PSDUI/UiDataManager";
 import { BindKeyName } from "../Data/BindKeyName";
-import { NavigationBarBackData, UIOpenOrHideManager, commonBackData } from "./UIOpenOrHideManager";
+import { UIOpenOrHideManager, commonBackData } from "./UIOpenOrHideManager";
 import { GalManagerRequest } from "../AutoCode/Net/ClientRequest/GalManagerRequest";
 import { GalPreviewData } from "GalPreviewData";
-import { GalData } from "GalData";
 import { GalRoleData } from "GalRoleData";
 import { cMap } from "Data/Map";
 import { BackStoryData } from "BackStoryData";
@@ -109,8 +108,9 @@ export class GameProjectManager {
                 if (GameProjectManager.isTestBol && index > 5) {
                     break;
                 }
-
-                this.GameDataArr.push(data);
+                if (data.icon != "已删除") {
+                    this.GameDataArr.push(data);
+                }
                 index++;
             }
             console.log("预览项目列表数据 ：", this.GameDataArr);

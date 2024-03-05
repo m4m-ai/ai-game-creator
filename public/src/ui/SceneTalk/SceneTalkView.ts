@@ -17,7 +17,7 @@ limitations under the License.
 import { AIResourceManager } from "Manager/AIResourceManager";
 import { ChapterSceneDirectoryManager, ChapterSceneType } from "Manager/ChapterSceneDirectoryManager";
 import { EditUIType, GameProjectManager } from "Manager/GameProjectManager";
-import { EditorGuideType, GuideIndexType, guideUIName, PlayerGuideManager } from "Manager/PlayerGuideManager";
+import { EditorGuideType, GuideIndexType, guideUIName, PlayerGuideManager, StoryIndexType } from "Manager/PlayerGuideManager";
 import { SceneTalkManager } from "Manager/SceneTalkManager"
 import { UiNames } from "Manager/UIData/UiNames";
 import { UIOpenOrHideManager } from "Manager/UIOpenOrHideManager";
@@ -28,6 +28,9 @@ import { SceneInfo } from "Data/SceneInfo";
 import { DialogManagerRequest } from "AutoCode/Net/ClientRequest/DialogManagerRequest";
 import { FunctionBinder, UiDataManager } from "PSDUI/UiDataManager";
 import { BindKeyName } from "Data/BindKeyName";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
+import { ChatTabEnum } from "Data/EnumType";
 
 export class SceneTalkView extends SceneTalk.SceneTalk {
     public static Instance: SceneTalkView;
@@ -83,11 +86,21 @@ export class SceneTalkView extends SceneTalk.SceneTalk {
             sceneInfo = ChapterSceneDirectoryManager.Instance.SceneData;
         }
 
-        if (sceneInfo.stepText) {
-            this.inpText(sceneInfo.stepText);
+        if (AppMain.buildType != BuildType.StoryType) {
+            if (sceneInfo) {
+                if (sceneInfo.stepText) {
+                    this.inpText(sceneInfo.stepText);
+                } else {
+                    SceneTalkManager.Instance.GetVoicesByDaiglog(sceneInfo.chapter.id, sceneInfo.id)
+                    this.inpText("");
+                }
+            }
         } else {
-            SceneTalkManager.Instance.GetVoicesByDaiglog(sceneInfo.chapter.id, sceneInfo.id)
-            this.inpText("");
+            if (sceneInfo) {
+                if (sceneInfo.stepText) {
+                    this.inpText(sceneInfo.stepText);
+                }
+            }
         }
 
         AIResourceManager.currentUIname = UiNames.SceneTalk;
@@ -135,6 +148,13 @@ export class SceneTalkView extends SceneTalk.SceneTalk {
 
     private multiplebgbtncbgFunBind() {
         console.log("ai 重新生成");
+        if (AppMain.buildType == BuildType.StoryType) {
+            let tabIndex = 0;
+            tabIndex = ChatTabEnum.sceneDialogue;
+            PlayerGuideManager.instance.changeChatTabFun(tabIndex);
+            return;
+        }
+
         if (PlayerGuideManager.isNewGuideBol) {
             UIOpenOrHideManager.Instance.HideNavigationBarView();
         }
@@ -143,6 +163,22 @@ export class SceneTalkView extends SceneTalk.SceneTalk {
 
     private multiplebgbtncFunBind() {
         console.log("编辑器 保存");
+
+        if (AppMain.buildType == BuildType.StoryType) {
+            let text = this.bg2.bg3.inpb_inp.inputField.text;
+            if (this.startText != text) {
+                this.startText = text;
+                //发生改变
+                let sceneData = ChapterSceneDirectoryManager.Instance.SceneData;
+                if (sceneData != null) {
+                    sceneData.createStepByText(text);
+                    sceneData.sendDialogDataToServer();
+                }
+            }
+            PlayerGuideManager.instance.StoryGuideIndex(StoryIndexType.backgroundType);
+            return;
+        }
+
 
         if (PlayerGuideManager.isNewGuideBol) { //引导中
             //保存

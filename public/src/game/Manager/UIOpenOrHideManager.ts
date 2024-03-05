@@ -23,6 +23,8 @@ import { CharacterFactionType } from "./CharacterSettingManager";
 import { resourceType } from "./AIResourceManager";
 import { ChpaterSceneTypeData } from "./ChapterSceneDirectoryManager";
 import { SceneInfo } from "../Data/SceneInfo";
+import { NewgameData } from "./NewgameManager";
+import { GamedescData } from "./GamedescManager";
 
 export class UIOpenOrHideManager {
     public static get Instance(): UIOpenOrHideManager {
@@ -174,10 +176,10 @@ export class UIOpenOrHideManager {
     }
 
     public OpenNavigationBarView(data: NavigationBarBackData) {
-        UiManager.showUi(UiNames.Navigationbar, data);
+        UiManager.showUi(UiNames.NavigationBar, data);
     }
     public HideNavigationBarView() {
-        UiManager.hideUi(UiNames.Navigationbar);
+        UiManager.hideUi(UiNames.NavigationBar);
     }
 
     // BackgroundMusic
@@ -246,6 +248,26 @@ export class UIOpenOrHideManager {
 
     public HideStartView() {
         UiManager.hideUi(UiNames.Start);
+    }
+
+
+    //提示弹窗
+    public OpenNewgameView(poupData: NewgameData) {
+        UiManager.showUi(UiNames.Newgame, poupData);
+    }
+
+    public HideNewgameView() {
+        UiManager.hideUi(UiNames.Newgame);
+    }
+
+    
+    //提示弹窗
+    public OpenGamedescView(poupData: GamedescData) {
+        UiManager.showUi(UiNames.Gamedesc, poupData);
+    }
+
+    public HideGamedescView() {
+        UiManager.hideUi(UiNames.Gamedesc);
     }
 }
 export class commonBackData {

@@ -74,6 +74,10 @@ export class LogonView extends Logon.Logon {
         this.bg1_img.inputbg.inputbg4.inpu1.inp_inp.inputField.ContentType = m4m.framework.contentType.PassWord;
         this.bg1_img.inputbg.inputbg4.inpu1.inpu_inp.transform.visible = false;
 
+        this.bg1_img.inputbg.buttonbg.returntologinbg_btn.transform.visible = false;
+
+        this.bg1_img.inputbg.buttonbg.registerbg1_btn.transform.visible = false;
+
     }
 
     private onShowFunc() {
@@ -111,11 +115,11 @@ export class LogonView extends Logon.Logon {
         let pass = this.bg1_img.inputbg.inputbg4.inpu1.inpu_inp.inputField.text;
         // let code = this.bg1_img.inputbg.inputbg4.input1_inp.inputField.text;
         //&& code
-        let bool = (text && pass) ? false : true;
-        this.bg1_img.inputbg.buttonbg.registerbg1_btn.transform.visible = bool;
-        if (this.isshow) {
-            this.bg1_img.inputbg.inputbg4.inpu1.inpu_inp.inputField.text = this.bg1_img.inputbg.inputbg4.inpu1.inp_inp.inputField.text;
-        }
+        // let bool = (text && pass) ? false : true;
+        // this.bg1_img.inputbg.buttonbg.registerbg1_btn.transform.visible = bool;
+        // if (this.isshow) {
+        //     this.bg1_img.inputbg.inputbg4.inpu1.inpu_inp.inputField.text = this.bg1_img.inputbg.inputbg4.inpu1.inp_inp.inputField.text;
+        // }
         // this.inpChange();
     }
 
@@ -127,19 +131,19 @@ export class LogonView extends Logon.Logon {
 
     private LogOnFun() {
         let name = this.bg1_img.inputbg.inputbg4.inputt_inp.inputField.text
-        let reg = this.regExp(name);
-        if (!reg) {
-            console.log("注意：手机号格式不正确，请您重新填写")
-            SkipBoxManager.Instance.ShowSkipBox("注意：手机号格式不正确，请您重新填写");
-            return;
-        }
+        // let reg = this.regExp(name);
+        // if (!reg) {
+        //     console.log("注意：手机号格式不正确，请您重新填写")
+        //     SkipBoxManager.Instance.ShowSkipBox("注意：手机号格式不正确，请您重新填写");
+        //     return;
+        // }
         let pass = this.bg1_img.inputbg.inputbg4.inpu1.inpu_inp.inputField.text;
-        let passBool = this.passwordExp(pass);
-        if (!passBool) {
-            console.log("注意：密码格式错误，请您输入密码为10位以上至少包含数字和字母的组合");
-            SkipBoxManager.Instance.ShowSkipBox("注意：密码格式错误，请您输入密码为10位以上至少包含数字和字母的组合");
-            return;
-        }
+        // let passBool = this.passwordExp(pass);
+        // if (!passBool) {
+        //     console.log("注意：密码格式错误，请您输入密码为10位以上至少包含数字和字母的组合");
+        //     SkipBoxManager.Instance.ShowSkipBox("注意：密码格式错误，请您输入密码为10位以上至少包含数字和字母的组合");
+        //     return;
+        // }
         // let code = this.bg1_img.inputbg.inputbg4.input1_inp.inputField.text;
         // if (code.length < 6) {
         //     return;

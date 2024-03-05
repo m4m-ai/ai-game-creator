@@ -1856,6 +1856,15 @@ export class WebsocketTool {
         NetWebscoket.Instance.sendStr(mess);
     }
 
+    /**
+     * 通过语言模型生成指定项目的人物设定和人物样貌,样貌猜想,故事的章节,故事整体设定背景，llmType：调用的语言模型
+     */
+    public ProjectBasicSettingsManager_LLM_GetStory(projectId, title, llmType, prompt) {
+        let paramJsons =`"a0":${JSON.stringify(projectId)},"a1":${JSON.stringify(title)},"a2":${JSON.stringify(llmType)},"a3":${JSON.stringify(prompt)},`;
+        let mess = this.getMsg("ProjectBasicSettingsManager","LLM_GetStory",`${paramJsons}`);
+        NetWebscoket.Instance.sendStr(mess);
+    }
+
     /***
      * 设定指定项目的项目名
      */

@@ -28,6 +28,8 @@ import { ChatGuideManager } from "./ChatGuideManager";
 import { ChatApiType, ChatTabEnum } from "../Data/EnumType";
 import { ResManager } from "./ResManager";
 import { CommonPoupManager } from "./CommonPoupManager";
+import { AutomatedImportManager } from "./AutomatedImportManager";
+import { BuildType } from "../GameEnum";
 
 // globalThis["test1"] = () => {
 //     ChatMessageDataManager.Instance["sendToAIByType"](ChatApiType.role, "角色设定", "生成男兽人主角", {});
@@ -148,12 +150,24 @@ export class ChatMessageDataManager {
                 }
             }
 
+            // if (AppMain.buildType == BuildType.StoryType) {
+            //     if (result.title != "自动导入" && result.title != "故事导入") {
+            //         AutomatedImportManager.Instance.refreshAiChat(result);
+            //     }
+            // }
+
+            if (AppMain.buildType == BuildType.StoryType && AppMain.buildBool) {
+                AutomatedImportManager.Instance.init(result, str);
+                AutomatedImportManager.Instance.refreshAiChat(AutomatedImportManager.Instance.originData);
+            }
+            // if (AppMain.buildType == BuildType.AIType) {
             //某会话中具体的聊天数据
             if (!this.hasChatTab(result.title)) {
                 //console.error("不存在页签: " + result.title);
                 //console.log(str);
                 return;
             }
+            // }
             let index = this.getChatRecordItemIndex(result.title, result.id);
             let tab = this.getChatTab(result.title);
 
@@ -372,7 +386,30 @@ export class ChatMessageDataManager {
                     }
                     console.log("ai返回 生成更多消息完成: ", chatRecordItem);
                 }
-                this.refreshAiChat(chatRecordItem, index);
+
+                if (result.title != "故事导入" && result.title != "自动导入") {
+                    this.refreshAiChat(chatRecordItem, index);
+                } else {
+                    let id = (this._userChatIndex++).toString();
+                    let content = "数据正在生成..."
+                    if (chatRecordItem.originData.isOver) {
+                        content = "数据生成完毕"
+                    }
+                    let chatMessageData: Entity.ChatMessageData = {
+                        id,
+                        title: result.title,
+                        content: content,
+                        isOver: chatRecordItem.originData.isOver,
+                        sendTime: Date.now(),
+                    };
+                    let data = new ChatRecordItem(index, this.getChatTabTypeByTitle(result.title), chatMessageData);
+                    data.aiChatTextDic = chatRecordItem.aiChatTextDic;
+                    data.canShowButton = chatRecordItem.canShowButton;
+                    data.customButton = chatRecordItem.customButton;
+                    data.compelDisplayButton = chatRecordItem.compelDisplayButton;
+                    data.regenBtn = chatRecordItem.regenBtn;
+                    this.refreshAiChat(data, index);
+                }
             }
         });
     }
@@ -404,7 +441,7 @@ export class ChatMessageDataManager {
             case ChatApiType.backgroundSetting://背景设定
                 //通过语言模型生成指定项目的背景设定，llmType：调用的语言模型
                 message += "\n\n请使用中文回答, 并且请返回格式化好的json数据";
-                WebsocketTool.Instance.ProjectBasicSettingsManager_LLM_GetBackStory(currentID, title, 1, message);
+                WebsocketTool.Instance.ProjectBasicSettingsManager_LLM_GetBackStory(currentID, title, 0, message);
                 break;
             case ChatApiType.role://角色设定
                 //通过语言模型生成角色设定，llmType：调用的语言模型
@@ -414,15 +451,15 @@ export class ChatMessageDataManager {
             case ChatApiType.rolePortrait: //角色立绘
                 console.error("角色立绘 " + param);
                 let chatID = null;
-                if(param!=null){
-                    let chatType=param.callApiType;
+                if (param != null) {
+                    let chatType = param.callApiType;
                     chatID = param.chatID;
-                    if(chatType==ChatApiType.roleEmote){//角色表情
-                        console.error("可以发角色表情 " + param,chatID);
-                        let path=param.path;
+                    if (chatType == ChatApiType.roleEmote) {//角色表情
+                        console.error("可以发角色表情 " + param, chatID);
+                        let path = param.path;
                         console.error(path);
-                        let lastIndex=path.lastIndexOf(".");
-                        let imageJson=path.slice(0,lastIndex)+".json";
+                        let lastIndex = path.lastIndexOf(".");
+                        let imageJson = path.slice(0, lastIndex) + ".json";
                         // CommonPoupManager.instance.openCommonPopupFun({
                         //     titleStr: "删除", leftBtnBol: true, midBtnBol: false, rightBtnBol: true, leftbtnStr: "取消", midbtnStr: "", rightbtnStr: "确认删除",
                         //     showDescribBol: true, describeStr: "您确定想要删除此项目吗？",
@@ -435,22 +472,20 @@ export class ChatMessageDataManager {
                         ResManager.loadJson(imageJson, (txt) => {
                             let jsonStr = txt;
                             if (typeof (txt) == "string") {
-                            }else
-                            {
-                                jsonStr=JSON.stringify(txt);
+                            } else {
+                                jsonStr = JSON.stringify(txt);
                             }
                             // console.error(jsonStr);
                             //如果需要生成更多图片, 则chatid应该传上一条消息id
                             WebsocketTool.Instance.ProjectRoleManager_SetBiaoqing(currentID, title, jsonStr, chatID);
                         });
                         return;
-                    }else
-                    {
+                    } else {
 
                     }
                 }
                 //如果需要生成更多图片, 则chatid应该传上一条消息id
-                WebsocketTool.Instance.ProjectRoleManager_StableDiffusio_GetRole(currentID, title, 1, 0, message, chatID);
+                WebsocketTool.Instance.ProjectRoleManager_StableDiffusio_GetRole(currentID, title, 4, 0, message, chatID);
                 break
             case ChatApiType.chapterScenes://对话场景
                 message += "\n\n请使用中文回答, 并且请返回格式化好的json数据";
@@ -477,6 +512,9 @@ export class ChatMessageDataManager {
                 break;
             case ChatApiType.sceneDaiglogVoices: //生成语音
                 WebsocketTool.Instance.DialogManager_VITS_GetVoiceByScene(currentID, title, param.chapterId, param.sceneId);
+                break;
+            case ChatApiType.storyImport: //
+                WebsocketTool.Instance.ProjectBasicSettingsManager_LLM_GetStory(currentID, title, 1, message);
                 break;
         }
 
@@ -521,6 +559,15 @@ export class ChatMessageDataManager {
                 break;
             case ChatTabEnum.backgroundImage:
                 title = "背景图";
+                break;
+            case ChatTabEnum.storyImport:
+                title = "故事导入"
+                break;
+            case ChatTabEnum.rolePortrait:
+                title = "角色立绘"
+                break
+            case ChatTabEnum.autoImport:
+                title = "自动导入";
                 break;
             default:
                 return;
@@ -796,8 +843,8 @@ export class ChatMessageDataManager {
                 text.aiContentText = chatMeesagteData.content;
                 text.aiTipsText = "";
                 //具体哪个AI 后续根据服务器给的标签 设置
-                conData.aiChatTextDic.set("ChatGPT", text);
-
+                // conData.aiChatTextDic.set("ChatGPT", text);
+                conData.aiChatTextDic.set("RWKV      ", text);
                 return conData;
             }
         }

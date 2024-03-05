@@ -35,7 +35,7 @@
     "declarationMap": true,
     "types": [
       "../../lib/m4m",
-      "../../lib/dat.gui",
+      "../../lib/debug/dat.gui",
       "../../lib/m4m_editor/index",
       "../../lib/node_modules/@types/ExcelData",
       "../../lib/node_modules/@types/gameUtil",

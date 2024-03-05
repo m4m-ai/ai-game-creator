@@ -21,7 +21,7 @@ import { RoleSettingsViewData } from "./RoleSettingsViewData";
 import { GameMgr } from "GameMgr";
 import { CommonUIUtils } from "Data/CommonUIUtils";
 import { UIOpenOrHideManager } from "Manager/UIOpenOrHideManager";
-import { EditorGuideType, GuideIndexType, PlayerGuideManager, guideUIName } from "Manager/PlayerGuideManager";
+import { EditorGuideType, GuideIndexType, PlayerGuideManager, StoryIndexType, guideUIName } from "Manager/PlayerGuideManager";
 import { UiNames } from "Manager/UIData/UiNames";
 import { ProjectRoleManagerRequest } from "AutoCode/Net/ClientRequest/ProjectRoleManagerRequest";
 import { EditUIType, GameProjectManager } from "Manager/GameProjectManager";
@@ -29,6 +29,12 @@ import { RoleSettingManager } from "Manager/RoleSettingManager";
 import { GalRoleData } from "GalRoleData";
 import { FrameMgr } from "Tools/FrameMgr";
 import { AIResourceManager } from "Manager/AIResourceManager";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
+import { UiManager } from "PSDUI/UiManager";
+import { UiDataManager } from "PSDUI/UiDataManager";
+import { BindKeyName } from "Data/BindKeyName";
+import { ChatTabEnum } from "Data/EnumType";
 
 export class RoleSettingsView extends RoleSettings.RoleSettings {
     public static Instance: RoleSettingsView;
@@ -158,6 +164,12 @@ export class RoleSettingsView extends RoleSettings.RoleSettings {
     public reBackFun() {
         console.log("编辑器 返回");
         this.isRebackBol = true;
+        if (AppMain.buildType == BuildType.StoryType) {
+            AIResourceManager.instance.editorRebackOrSave();
+            AIResourceManager.openUIname = UiNames.FileManagerPanel;
+            AIResourceManager.closeUIname = UiNames.CharacterSetting;
+            return
+        }
         if (!PlayerGuideManager.isNewGuideBol) {
             AIResourceManager.instance.editorRebackOrSave();
             AIResourceManager.openUIname = UiNames.FileManagerPanel;
@@ -170,6 +182,12 @@ export class RoleSettingsView extends RoleSettings.RoleSettings {
         let galroleData = JSON.stringify(this.currentGalroleData);
         console.log("保存的 角色设定数据 ！！！ ", galroleData);
         ProjectRoleManagerRequest.Instance.SetRoleSetting(GameProjectManager.instance.currentGalData.id, this.currentRoleUUid, galroleData);
+
+        if (AppMain.buildType == BuildType.StoryType) {
+            PlayerGuideManager.instance.StoryGuideIndex(StoryIndexType.BasicType)
+            return;
+        }
+
         if (PlayerGuideManager.isNewGuideBol && GameProjectManager.instance.currentSchedule < GuideIndexType.ChapterScenarios) {
             GameProjectManager.instance.currentSchedule = GuideIndexType.ChapterScenarios;
             GameProjectManager.instance.sendGuideIndexToService();
@@ -189,6 +207,16 @@ export class RoleSettingsView extends RoleSettings.RoleSettings {
     }
     public AIregenerationFun() {
         console.log("ai 重新生成");
+        if (AppMain.buildType == BuildType.StoryType) {
+            let tabIndex = 0;
+            if (UiManager.isUiShow(UiNames.RoleSettings)) {
+                console.log("角色设定显示,进入AI 对话界面");
+                UiDataManager.changeFunctionData(BindKeyName.RoleSettingByAI, null);
+                tabIndex = ChatTabEnum.rolePortrait;
+            }
+            PlayerGuideManager.instance.changeChatTabFun(tabIndex);
+            return;
+        }
         if (PlayerGuideManager.isNewGuideBol) {
             UIOpenOrHideManager.Instance.HideNavigationBarView();
         }
@@ -266,6 +294,7 @@ export class RoleSettingsView extends RoleSettings.RoleSettings {
             this.bg3.bg2.bg1.picbg_img.plus_btn.transform.visible = false;
             this.viewData.standingPainting = this.currentGalroleData.roleDrawing["normal"];
         }
+
         if (GameProjectManager.isInEditorBol) {
             this.bg3.crown.transform.visible = true;
             this.bg3.naturalbtnbg.transform.visible = true;
@@ -275,6 +304,7 @@ export class RoleSettingsView extends RoleSettings.RoleSettings {
             this.bg3.naturalbtnbg.transform.visible = false;
             this.bg3.savebg_btn.transform.visible = true;
         }
+
         if (CenterDisplayBol) {
             let totalWidth = this.bg.transform.width;
             let uiWidth = this.bg3.bg2.transform.width;
@@ -293,6 +323,12 @@ export class RoleSettingsView extends RoleSettings.RoleSettings {
                 this.transform.setLayoutValue(m4m.framework.layoutOption.TOP, 100);
                 this.transform.markDirty();
             }
+            // if (AppMain.buildType == BuildType.StoryType && PlayerGuideManager.isNewGuideBol) {
+            //     this.transform.setLayoutValue(m4m.framework.layoutOption.LEFT, GameProjectManager.leftShifting);
+            //     this.transform.setLayoutValue(m4m.framework.layoutOption.BOTTOM, 122);
+            //     this.transform.setLayoutValue(m4m.framework.layoutOption.TOP, 100);
+            //     this.transform.markDirty();
+            // }
         }
         RoleSettingsView.Instance.bg3.bg2.bg1.artstylebg2.artstylebg.unfoldbg_img.unfoldbg1_scr.unfoldbg1content.transform.localTranslate.y = 0;
         RoleSettingsView.Instance.bg3.bg2.bg1.artstylebg2.artstylebg.unfoldbg_img.unfoldbg1_scr.unfoldbg1content.transform.height = this.grid.height;
@@ -332,29 +368,31 @@ export class RoleSettingsView extends RoleSettings.RoleSettings {
         let roleName = this.bg3.bg2.bg1.inpa3.inpa_inp.inputField.text;
         let roleSetting = this.bg3.bg2.bg1.inpbbg2.inpb_inp.inputField.text;
 
-        this.currentGalroleData = new GalRoleData();
-        if (this.currentRoleUUid != "") {
+        if (!this.currentGalroleData) {
+            this.currentGalroleData = new GalRoleData();
+        }
+        if (this.currentRoleUUid) {
             this.currentGalroleData.id = this.currentRoleUUid;
         }
-        if (roleName != "") {//角色名
+        if (roleName) {//角色名
             RoleSettingManager.instance.currentRoleData.RoleName = roleName;
             this.currentGalroleData.RoleName = roleName
         }
-        if (roleSetting != "") {//角色设定
+        if (roleSetting) {//角色设定
             RoleSettingManager.instance.currentRoleData.Profile = roleSetting;
             this.currentGalroleData.Profile = roleSetting;
         }
         //角色立绘设置
-        if (this.viewData.standingPainting != "") {
+        if (this.viewData.standingPainting) {
             RoleSettingManager.instance.currentRoleData.roleDrawing = { "normal": this.viewData.standingPainting }
             this.currentGalroleData.roleDrawing = { "normal": this.viewData.standingPainting }
         }
         //角色声线
-        if (this.viewData.voiceId != "") {
+        if (this.viewData.voiceId) {
             RoleSettingManager.instance.currentRoleData.voiceID = this.viewData.voiceId;
             this.currentGalroleData.voiceID = this.viewData.voiceId;
         }
-        if (this.viewData.RoleDefinition != "") {
+        if (this.viewData.RoleDefinition) {
             RoleSettingManager.instance.currentRoleData.RoleDefinition = this.viewData.RoleDefinition;
             this.currentGalroleData.RoleDefinition = this.viewData.RoleDefinition;
         }

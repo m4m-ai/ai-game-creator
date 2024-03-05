@@ -26,7 +26,7 @@ export class CommonPoupManager {
     private static _instance: CommonPoupManager = new CommonPoupManager();
     private constructor() {
     }
-    //  
+    //   
     public init() {
     }
 

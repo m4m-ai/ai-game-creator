@@ -17,6 +17,8 @@ limitations under the License.
 import { cMap } from "Data/Map";
 import { ChatMessageDataManager } from "../Manager/ChatMessageDataManager";
 import { ChatApiType, ChatTabEnum } from "./EnumType";
+import { AppMain } from "../appMain";
+import { BuildType } from "../GameEnum";
 
 
 /**
@@ -161,12 +163,17 @@ export class ChatRecordItem {
      */
     public canShowButton() {
         //return this.originData.isOver && this.useButton && this.originData.jsondata != null && this.originData.jsondata.length > 0;
-        return this.originData.isOver && this.customButton &&
-            (
-                this.compelDisplayButton ||
-                (this.isFromServer && this.originData.jsondata != null && this.originData.jsondata.length > 0) ||
-                !this.isFromServer
-            );
+        if (AppMain.buildType == BuildType.StoryType) {
+            return this.originData.isOver;
+        } else {
+            return this.originData.isOver && this.customButton &&
+                (
+                    this.compelDisplayButton ||
+                    (this.isFromServer && this.originData.jsondata != null && this.originData.jsondata.length > 0) ||
+                    !this.isFromServer
+
+                );
+        }
     }
 
     /** 获取上一条对话 */

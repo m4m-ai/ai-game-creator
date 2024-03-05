@@ -50,7 +50,8 @@ export class TextPopup extends PopupBase<CheakPopup.boxc_img> {
 
         this.ui.textc2_lab.label.text = "";
         let cellTemplete = this.ui.tabcbg;
-        cellTemplete.tabc1_btn.tablabc1_lab.label.text = "ChatGPT";
+        // cellTemplete.tabc1_btn.tablabc1_lab.label.text = "ChatGPT";
+        cellTemplete.tabc1_btn.tablabc1_lab.label.text = "RWKV      ";
         this.aiTabList = new GridExtend(cellTemplete, CheakPopupAiTab, {
             rows: 1,
             columns: 4,

@@ -18,9 +18,9 @@ import { newUiBase } from "PSDUI/newUiBase";
 import { GameUiView } from "GameUiView";
 
 
-export namespace Navigationbar {
-    export class Navigationbar extends newUiBase {
-        public static Instance: Navigationbar;
+export namespace NavigationBar {
+    export class NavigationBar extends newUiBase {
+        public static Instance: NavigationBar;
         public onInit(){
             if (this.onInite) {
                 this.onInite();
@@ -89,10 +89,12 @@ export namespace Navigationbar {
         /**修改label 选中修改label文字方法*/
         public title1_lab_text(text: string){this.bg1.windowbg_img.dialogbg2.dialogbg1_scr.dialogbg1content.cellbg.title1_lab.label.text=text;}
 
-        public uiName:string="Navigationbar";
+        public uiName:string="NavigationBar";
 
         public bg: bg = new bg();
         public bg1: bg1 = new bg1();
+        /***/
+        public popupbg2_img: popupbg2_img = new popupbg2_img();
     }
     export class bg {
         public transform: m4m.framework.transform2D;
@@ -341,6 +343,16 @@ export namespace Navigationbar {
         public transform: m4m.framework.transform2D;
         public image: m4m.framework.image2D;
         public button: m4m.framework.button;
+    }
+    export class popupbg2_img {
+        public transform: m4m.framework.transform2D;
+        public image: m4m.framework.image2D;
+        /***/
+        public popupbg1_img: popupbg1_img = new popupbg1_img();
+    }
+    export class popupbg1_img {
+        public transform: m4m.framework.transform2D;
+        public image: m4m.framework.image2D;
     }
 
 }

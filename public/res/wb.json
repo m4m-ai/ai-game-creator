@@ -1,0 +1,109 @@
+
+{
+    "storySetting": "故事发生在中世纪的欧洲（14世纪），史蒂芬国王与丽亚王后生下了小公主爱罗拉，全国人民为此而向国王与王后庆贺。",
+    "gameName": "睡美人",
+    "chapterData": [
+        {
+            "chapterName": "公主的诞生",
+            "chapterDesc": "史蒂芬国王与丽亚王后生下了小公主爱罗拉，全国人民为此庆贺。",
+            "sceneData": [
+                {
+                    "sceneName": "诞生洗礼仪式",
+                    "sceneDesc": "公主的诞生洗礼仪式上，三位好仙子为她祝福。"
+                }
+            ]
+        },
+        {
+            "chapterName": "邪恶的诅咒",
+            "chapterDesc": "黑女巫玛琳菲森施下诅咒，让公主在16岁生日被纺车针刺死。",
+            "sceneData": [
+                {
+                    "sceneName": "黑女巫的出现",
+                    "sceneDesc": "黑女巫玛琳菲森突然出现，施下诅咒。"
+                }
+            ]
+        },
+        {
+            "chapterName": "沉睡的公主",
+            "chapterDesc": "公主进入长眠状态，只有王子的真爱之吻才能使她苏醒。",
+            "sceneData": [
+                {
+                    "sceneName": "第三位仙子的祝福",
+                    "sceneDesc": "第三位仙子将死亡魔咒改为沉睡之咒。"
+                },
+                {
+                    "sceneName": "纺车的烧毁",
+                    "sceneDesc": "国王下令将全国的纺车全部烧毁。"
+                },
+                {
+                    "sceneName": "公主的长眠",
+                    "sceneDesc": "尽管有三位仙子的帮助，公主仍然长眠不醒。"
+                }
+            ]
+        },
+        {
+            "chapterName": "真爱的觉醒",
+            "chapterDesc": "菲利普王子出现，与公主互生情愫。",
+            "sceneData": [
+                {
+                    "sceneName": "菲利普王子的勇救",
+                    "sceneDesc": "菲利普王子劈荆斩棘、克服万难，打败玛琳菲森。"
+                },
+                {
+                    "sceneName": "真爱之吻",
+                    "sceneDesc": "菲利普王子用真爱之吻唤醒了公主。"
+                }
+            ]
+        }
+    ],
+    "characterData": [
+        {
+            "name": "史蒂芬国王",
+            "gender": "男性",
+            "rolePositioning": "npc",
+            "characterDesign": "慈父、正直的统治者，中年男性，有着浓密的白色胡须。"
+        },
+        {
+            "name": "丽亚王后",
+            "gender": "女性",
+            "rolePositioning": "npc",
+            "characterDesign": "慈母、美丽的王后，长发披肩，身着华丽的礼服。"
+        },
+        {
+            "name": "爱罗拉公主",
+            "gender": "女性",
+            "rolePositioning": "主角",
+            "characterDesign": "乖巧、善良的公主，长发及腰，穿着华丽的公主服饰。"
+        },
+        {
+            "name": "花拉仙子",
+            "gender": "女性",
+            "rolePositioning": "导师",
+            "characterDesign": "友善、善良的仙子，拥有花朵般的翅膀，穿着缤纷的花瓣裙。"
+        },
+        {
+            "name": "翡翠仙子",
+            "gender": "女性",
+            "rolePositioning": "导师",
+            "characterDesign": "智慧、聪明的仙子，拥有翡翠般的翅膀，穿着绿色的长袍。"
+        },
+        {
+            "name": "蓝天仙子",
+            "gender": "女性",
+            "rolePositioning": "导师",
+            "characterDesign": "慈爱、宽容的仙子，拥有蓝色的翅膀，穿着白色的长袍。"
+        },
+        {
+            "name": "玛琳菲森",
+            "gender": "女性",
+            "rolePositioning": "反派",
+            "characterDesign": "邪恶、阴险的黑女巫，长发黑如夜，身穿黑色的长袍。"
+        },
+        {
+            "name": "菲利普王子",
+            "gender": "男性",
+            "rolePositioning": "主角",
+            "characterDesign": "勇敢、正直的王子，英俊威武，身穿骑士装束。"
+        }
+    ]
+}

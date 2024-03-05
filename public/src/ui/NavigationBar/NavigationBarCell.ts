@@ -17,8 +17,8 @@ limitations under the License.
 import { UiNode, GridConfig } from "Data/GridExtend/GridExtend";
 import { ICellHandler } from "Data/GridExtend/ICellHandler";
 import { Step } from "Data/Process/Step";
-import cellbg = Navigationbar.cellbg;
-import { Navigationbar } from "./NavigationBar";
+import cellbg = NavigationBar.cellbg;
+import { NavigationBar } from "./NavigationBar";
 import { EditorManager } from "Manager/EditorManager";
 
 export class NavigationBarCell implements ICellHandler {

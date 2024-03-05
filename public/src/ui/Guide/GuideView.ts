@@ -18,6 +18,8 @@ import { PlayerGuideManager, editorGuideData } from "Manager/PlayerGuideManager"
 import { Guide } from "./Guide";
 import { GuideViewData } from "./GuideViewData";
 import { GameProjectManager } from "Manager/GameProjectManager";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
 
 
 export class GuideView extends Guide.Guide {
@@ -36,7 +38,7 @@ export class GuideView extends Guide.Guide {
         this.viewData = new GuideViewData();
 
         this.btn_btn_btnEvent = this.clickBtnFun.bind(this);
-        
+
     }
     private clickBtnFun() {
         console.log("按钮点击事件");
@@ -59,6 +61,11 @@ export class GuideView extends Guide.Guide {
         }
         this.box_img.transform.setLayoutValue(m4m.framework.layoutOption.LEFT, posX);
         this.box_img.transform.markDirty();
+
+
+        if (guideData.btnStr == "" && AppMain.buildType == BuildType.StoryType) {
+            guideData.btnStr = PlayerGuideManager.BtnStr;
+        }
 
         // let PosY = 0;
         if (guideData.btnStr != "") {

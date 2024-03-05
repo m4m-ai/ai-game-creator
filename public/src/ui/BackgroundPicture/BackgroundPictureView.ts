@@ -28,6 +28,9 @@ import { UIOpenOrHideManager } from "Manager/UIOpenOrHideManager";
 import { FrameMgr } from "Tools/FrameMgr";
 import { BackgroundPicture } from "./BackgroundPicture";
 import { BackgroundPictureViewData, PictureData } from "./BackgroundPictureViewData";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
+import { ChatTabEnum } from "Data/EnumType";
 
 export class BackgroundPictureView extends BackgroundPicture.BackgroundPicture {
     public static Instance: BackgroundPictureView;
@@ -206,12 +209,21 @@ export class BackgroundPictureView extends BackgroundPicture.BackgroundPicture {
             BackgroundPictureManager.Instance.addBackgrounPictureData(backGround);
         } else {
             this.viewData.Addbackground(desc, name);
+            let backgroundStep = StepPares.createDefaultBackgroundStep("1", this.viewData.image);
+            this.viewData.sceneData.setBackground(backgroundStep);
+            this.viewData.sceneData.sendDialogDataToServer();
         }
     }
 
     public multiplebgbtncbgFunBind() {
         console.log("ai 重新生成");
-        if(PlayerGuideManager.isNewGuideBol){
+        if (AppMain.buildType == BuildType.StoryType) {
+            let tabIndex = 0;
+            tabIndex = ChatTabEnum.backgroundImage;
+            PlayerGuideManager.instance.changeChatTabFun(tabIndex);
+            return;
+        }
+        if (PlayerGuideManager.isNewGuideBol) {
             UIOpenOrHideManager.Instance.HideNavigationBarView();
         }
         PlayerGuideManager.instance.setAIGuidByIndex(4);

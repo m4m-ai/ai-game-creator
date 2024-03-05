@@ -264,6 +264,7 @@ export namespace ChapterSceneMenu {
         public edit1_btn: edit1_btn = new edit1_btn();
         public arrowt_img: arrowt_img = new arrowt_img();
         public arrowb_img: arrowb_img = new arrowb_img();
+        public redpoint_img: redpoint_img = new redpoint_img();
     }
     export class folder_img {
         public transform: m4m.framework.transform2D;
@@ -283,6 +284,10 @@ export namespace ChapterSceneMenu {
         public image: m4m.framework.image2D;
     }
     export class arrowb_img {
+        public transform: m4m.framework.transform2D;
+        public image: m4m.framework.image2D;
+    }
+    export class redpoint_img {
         public transform: m4m.framework.transform2D;
         public image: m4m.framework.image2D;
     }

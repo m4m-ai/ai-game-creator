@@ -44,6 +44,8 @@ export class SceneInfo {
         this._chapter = value;
     }
 
+
+
     /** 当前场景名称 */
     public get sceneName() {
         return this._sceneName;
@@ -128,7 +130,7 @@ export class SceneInfo {
         }
 
         let prevRoleName: string;
-
+        let drawIndex = 1;
         let split = str.split('\n');
         for (let i = 0; i < split.length; i++) {
             let item = split[i];
@@ -169,7 +171,13 @@ export class SceneInfo {
                 } else if (roleName !== prevRoleName) { //切换立绘
                     let role = RoleSettingManager.instance.newGetCurrentProjectRoleByName(roleName);
                     if (role && role.roleDrawing != null && Object.keys(role.roleDrawing).length > 0) {
-                        this.appendStep(StepPares.createDefaultStandingPaintingStep("1", role.roleDrawing["normal"], 0.25, 0.75));
+                        if (drawIndex % 2 !== 0) {
+                            this.appendStep(StepPares.createDefaultStandingPaintingStep("1", role.roleDrawing["normal"], 0.25, 0.75));
+                            drawIndex++;
+                        } else {
+                            this.appendStep(StepPares.createDefaultStandingPaintingStep("1", role.roleDrawing["normal"], 0.85, 0.75));
+                            drawIndex++;
+                        }
                     } else {
                         this.appendStep(StepPares.createHideStandingPaintingStep("1"));
                     }
@@ -231,6 +239,8 @@ export class SceneInfo {
         let id = GameProjectManager.instance.currentGalData.id;
 
         let showRole: boolean = false;
+        let drawIndex = 1;
+        let nullIndex = 1;
 
         for (const step of this.stepList) {
             if (step.type == StepType.conversation) {
@@ -242,7 +252,6 @@ export class SceneInfo {
                 dialog.gal = id;
                 dialog.chapter = this.chapter.id;
                 dialog.scene = this.id;
-
                 //角色数据
                 if (role) {
                     dialog.roleId = role.id;
@@ -251,32 +260,36 @@ export class SceneInfo {
                     let draw = conversationStep.findStandingPainting();
                     if (draw) {
                         if (draw.data.movePositions != null && draw.data.movePositions.length > 0) {
-                            if (role.RoleDefinition == "主角" || role.RoleDefinition == "配角") {
+                            if (drawIndex % 2 !== 0) {
                                 StepPares.setDefaultStandingPaintingData(dialog as any,
                                     draw.data.resPath,
                                     draw.data.movePositions[0].x, draw.data.movePositions[0].y,
                                     draw.data.scaleX, draw.data.scaleY
                                 );
+                                drawIndex++;
                             } else {
                                 StepPares.setDefaultStandingPaintingData(dialog as any,
                                     draw.data.resPath,
                                     0.85, draw.data.movePositions[0].y,
                                     draw.data.scaleX, draw.data.scaleY
                                 );
+                                drawIndex++;
                             }
                         } else {
-                            if (role.RoleDefinition == "主角" || role.RoleDefinition == "配角") {
+                            if (nullIndex % 2 !== 0) {
                                 StepPares.setDefaultStandingPaintingData(dialog as any,
                                     draw.data.resPath,
                                     0.2, 0.75,
                                     1.3, 1.3
                                 );
+                                nullIndex++;
                             } else {
                                 StepPares.setDefaultStandingPaintingData(dialog as any,
                                     draw.data.resPath,
                                     0.85, 0.75,
                                     1.3, 1.3
                                 );
+                                nullIndex++;
                             }
                         }
                         showRole = true;

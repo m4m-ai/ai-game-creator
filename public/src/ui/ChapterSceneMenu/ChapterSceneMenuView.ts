@@ -18,7 +18,7 @@ import { CellData } from "Data/CellData";
 import { ChapterInfo } from "Data/ChapterInfo";
 import { GridExtend } from "Data/GridExtend/GridExtend";
 import { ChapterSceneDirectoryManager, ChapterSceneType, ChpaterSceneTypeData } from "Manager/ChapterSceneDirectoryManager";
-import { EditorGuideType, GuideIndexType, guideUIName, PlayerGuideManager } from "Manager/PlayerGuideManager";
+import { EditorGuideType, GuideIndexType, guideUIName, PlayerGuideManager, StoryIndexType } from "Manager/PlayerGuideManager";
 import { UiManager } from "PSDUI/UiManager";
 import { UiTools } from "PSDUI/UiTools";
 import { ChapterSceneMenu } from "./ChapterSceneMenu";
@@ -30,6 +30,9 @@ import { FrameMgr } from "Tools/FrameMgr";
 import { UiNames } from "Manager/UIData/UiNames";
 import { EditUIType, GameProjectManager } from "Manager/GameProjectManager";
 import { AIResourceManager } from "Manager/AIResourceManager";
+import { AppMain } from "appMain";
+import { BuildType } from "GameEnum";
+import { SkipBoxManager } from "Manager/SkipBoxManager";
 
 export class ChapterSceneMenuView extends ChapterSceneMenu.ChapterSceneMenu {
     public static Instance: ChapterSceneMenuView;
@@ -284,6 +287,15 @@ export class ChapterSceneMenuView extends ChapterSceneMenu.ChapterSceneMenu {
     }
 
     public SaveBgBtnFun() {
+        if (AppMain.buildType == BuildType.StoryType) {
+            if (this.viewData.SceneData) {
+                ChapterSceneDirectoryManager.Instance.SceneData = this.viewData.SceneData;
+                PlayerGuideManager.instance.StoryGuideIndex(StoryIndexType.SceneType);
+            } else {
+                SkipBoxManager.Instance.ShowSkipBox("请选择场景");
+            }
+            return;
+        }
         if (this.openType == ChapterSceneType.ChapterType) {
             if (this.viewData.getChapterSceneData().length > 1) {
                 if (PlayerGuideManager.isNewGuideBol && GameProjectManager.instance.currentSchedule < GuideIndexType.SelectScene) {

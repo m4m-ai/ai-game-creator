@@ -1,0 +1,67 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+
+    "target": "es5",
+
+    "module": "system",
+
+    "outFile": "../../lib/node_modules/@types/gameUtil.js",
+
+    "allowJs": false,
+
+    "checkJs": false,
+
+    "removeComments": false,
+
+    "noEmit": false,
+
+    "noEmitOnError": false,
+
+    "strict": true,
+
+    "alwaysStrict": false,
+
+    "noImplicitAny": false,
+
+    "noImplicitThis": false,
+
+    "strictNullChecks": false,
+
+    "strictBindCallApply": false,
+
+    "strictFunctionTypes": false,
+
+    "strictPropertyInitialization": false,
+
+    "noFallthroughCasesInSwitch": false,
+
+    "noImplicitReturns": false,
+
+    "noUnusedLocals": false,
+
+    "noUnusedParameters": false,
+
+    "skipLibCheck": true,
+
+    "allowUnreachableCode": false,
+
+    "typeRoots" : ["../../"],
+
+    "types": [
+      "../../lib/m4m",
+      "../../lib/dat.gui",
+    ],
+
+    //如果需要断点调试ts, 则不能配置 baseUrl 和 sourceRoot
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    "lib": [
+      "DOM",
+      "ES2015",
+    ],
+    "composite":true
+  }
+}

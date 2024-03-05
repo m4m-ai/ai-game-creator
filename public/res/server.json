@@ -1,0 +1,13 @@
+{
+	"VERSION": "0.0.1",
+	"SERVER_ID1": "ws://192.168.15.107:8004/",
+	"SERVER_ID2": "ws://192.168.9.2:8004/",
+	"SERVER_ID": "ws://192.168.15.82:8004/",
+	"REPORT_SERVER": "",
+	"EnableLogin": false,
+	"ResUrl2": "http://192.168.9.2:9696/",
+	"ResUrl": "http://192.168.15.82:9696/",
+	"FirstPreloadLength":3,
+	"PreloadLength":20,
+	"PreloadNum":3
+}

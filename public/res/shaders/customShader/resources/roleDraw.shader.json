@@ -1,0 +1,25 @@
+{
+    "layer": "transparent",
+	"properties": [
+        "_MainTex('MainTex',Texture)='white'{}",
+        "_Tex1('Tex1',Texture)='white'{}",
+        "_Tex2('Tex2',Texture)='white'{}",
+        "_Tex3('Tex3',Texture)='white'{}",
+        "_Tex1On('_Tex1On',Range(0.0, 1.0))=0.0",
+        "_Tex2On('_Tex2On',Range(0.0, 1.0))=0.0",
+        "_Tex3On('_Tex3On',Range(0.0, 1.0))=0.0",
+        "_Alpha('_Alpha', Range(0.0, 1.0)) = 1.0",
+        "_Superimposition('_Superimposition', Range(0.0, 7.0)) = 1.0"
+    ],
+    "passes": {
+      
+        "base": [
+            {
+                "showface": "all",
+                "blendmode": "blend",
+                "vs": "roleDraw",
+                "fs": "roleDraw"
+            }
+        ]
+    }
+}

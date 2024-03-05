@@ -1,0 +1,27 @@
+{
+    "layer": "transparent",
+    "properties": [
+        "frontTex('frontTex',Texture)='white'{}",
+        "backTex('backTex',Texture)='white'{}",
+        "maskTex('maskTex',Texture)='white'{}",
+        "threshold('threshold',Range(0.0,1.0)) = 0.5",
+        "tDelta('tDelta',Range(0.0,1.0)) = 0.1",
+        "frontScaleRatioW('frontScaleRatioW',Range(0.0,100.0)) = 1.0",
+        "frontScaleRatioH('frontScaleRatioH',Range(0.0,100.0)) = 1.0",
+        "backScaleRatioW('backScaleRatioW',Range(0.0,100.0)) = 1.0",
+        "backScaleRatioH('backScaleRatioH',Range(0.0,100.0)) = 1.0",
+        "ruleScaleRatioW('ruleScaleRatioW',Range(0.0,100.0)) = 1.0",
+        "ruleScaleRatioH('ruleScaleRatioH',Range(0.0,100.0)) = 1.0"
+    ],
+    "passes": {
+
+        "base": [
+            {
+                "showface": "all",
+                "blendmode": "blend",
+                "vs": "transform_mask_ff",
+                "fs": "transform_mask_ff"
+            }
+        ]
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "noEmit": false,
+      "declaration": true,
+      "emitDeclarationOnly": true,
+      "outDir": "./public/lib/m4m_editor",
+    }
+  }

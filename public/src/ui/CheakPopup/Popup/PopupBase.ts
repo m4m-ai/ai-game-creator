@@ -1,0 +1,41 @@
+/**
+@license
+Copyright (c) 2022 meta4d.me Authors
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ */
+import { ChatRecordItem } from "Data/DataType";
+import { UiNode } from "Data/GridExtend/GridExtend";
+import { CheakPopupViewData } from "../CheakPopupViewData";
+
+export abstract class PopupBase<T extends UiNode> {
+
+    public index: number;
+    public ui: T;
+    public topValue: number;
+    public data: ChatRecordItem;
+    public popupList: PopupBase<UiNode>[];
+    public viewData:CheakPopupViewData;
+
+    public abstract onInit(): void;
+    public abstract onSetData(data: ChatRecordItem, isFirst: boolean): void;
+    public abstract getHeight(): number;
+    public abstract dispose(): void;
+
+    public constructor(index: number, ui: T, popupList: PopupBase<UiNode>[],_viewData:CheakPopupViewData) {
+        this.index = index;
+        this.ui = ui;
+        this.popupList = popupList;
+        this.viewData=_viewData;
+    }
+}

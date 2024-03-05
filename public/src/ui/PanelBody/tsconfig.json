@@ -1,0 +1,68 @@
+{
+
+  "compilerOptions": {
+    "experimentalDecorators": true,
+
+    "target": "es5",
+
+    "module": "system",
+
+    "outFile": "../../../lib/node_modules/@types/PanelBody.js",
+
+    "allowJs": false,
+
+    "checkJs": false,
+
+    "removeComments": false,
+
+    "noEmit": false,
+
+    "noEmitOnError": false,
+
+    "strict": false,
+
+    "alwaysStrict": false,
+
+    "noImplicitAny": false,
+
+    "noImplicitThis": false,
+
+    "strictNullChecks": false,
+
+    "strictBindCallApply": false,
+
+    "strictFunctionTypes": false,
+
+    "strictPropertyInitialization": false,
+
+    "noFallthroughCasesInSwitch": false,
+
+    "noImplicitReturns": false,
+
+    "noUnusedLocals": false,
+
+    "noUnusedParameters": false,
+    
+    "skipLibCheck": true,
+
+    "allowUnreachableCode": false,
+
+    "types": [
+      "../../../lib/m4m",
+      "../../../lib/m4m_editor/index",
+      "../../../lib/node_modules/@types/gameMain",
+      "../../../lib/node_modules/@types/gameUtil",
+    ],
+    "paths": {
+      "m4m_editor/*": ["../../../lib/m4m_editor/*"]
+    },
+
+    //如果需要断点调试ts, 则不能配置 baseUrl 和 sourceRoot
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    
+    "lib":["es2015", "DOM","es2015.promise","es5","es2015.iterable", "es2015.core"]
+
+  }
+}
